@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Environment",
+    "displayName": "SemanticLabs",
+    "description": "Environnement"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d37027bb-1b51-4659-95aa-061f53d68e2e"
+  }
+}
