@@ -1,0 +1,510 @@
+table F_STK_ENT_CUG
+	isHidden
+
+	column COD_CUG_CM_PARENT
+		dataType: int64
+		sourceColumn: COD_CUG_CM_PARENT
+
+	column COD_CUG_SAISON
+		dataType: string
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_CUG_SAISON
+
+	column COD_REF_COMM
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_REF_COMM
+
+	column COD_REF_NOMENC
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_REF_NOMENC
+
+	column COD_WH_PHY
+		dataType: int64
+		sourceColumn: COD_WH_PHY
+
+	column DAT_PHOTO_STK
+		dataType: dateTime
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		sourceColumn: DAT_PHOTO_STK
+
+	column MNT_STK_ENT_DERN_PRX_ACHAT
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: MNT_STK_ENT_DERN_PRX_ACHAT
+
+	column MNT_STK_ENT_PCM_HT_EUR
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: MNT_STK_ENT_PCM_HT_EUR
+
+	column MNT_STK_ENT_PMD_HT_EUR
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: MNT_STK_ENT_PMD_HT_EUR
+
+	column MNT_STK_ENT_PRX_PRMP_NEGOCE
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: MNT_STK_ENT_PRX_PRMP_NEGOCE
+
+	column MNT_STK_ENT_VTE_CAT_TTC_EUR
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: MNT_STK_ENT_VTE_CAT_TTC_EUR
+
+	column NBR_PCB
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: NBR_PCB
+
+	column NBR_SPCB
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: NBR_SPCB
+
+	column PRX_DERN_PRX_ACHAT
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: PRX_DERN_PRX_ACHAT
+
+	column PRX_PCM_HT_EUR
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: PRX_PCM_HT_EUR
+
+	column PRX_PMD_HT_EUR
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: PRX_PMD_HT_EUR
+
+	column PRX_PRMP_NEGOCE
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: PRX_PRMP_NEGOCE
+
+	column PRX_VTE_CAT_TTC_DEV
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: PRX_VTE_CAT_TTC_DEV
+
+	column QTE_ENT_ENC_CMDFOU_ADM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_ENT_ENC_CMDFOU_ADM
+
+	column QTE_ENT_ENC_CMDFOU_ADM_UVC
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_ENT_ENC_CMDFOU_ADM_UVC
+
+	column QTE_ENT_ENC_CMDFOU_ADM_UVC_CM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_ENT_ENC_CMDFOU_ADM_UVC_CM
+
+	column QTE_ENT_ENC_CMDMAG_ADM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_ENT_ENC_CMDMAG_ADM
+
+	column QTE_ENT_ENC_CMDMAG_ADM_UVC
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_ENT_ENC_CMDMAG_ADM_UVC
+
+	column QTE_ENT_ENC_CMDMAG_ADM_UVC_CM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_ENT_ENC_CMDMAG_ADM_UVC_CM
+
+	column QTE_SOUS_DOUANE_ADM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_SOUS_DOUANE_ADM
+
+	column QTE_SOUS_DOUANE_ADM_UVC
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_SOUS_DOUANE_ADM_UVC
+
+	column QTE_SOUS_DOUANE_ADM_UVC_CM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_SOUS_DOUANE_ADM_UVC_CM
+
+	column QTE_STK_ENT_DISPO_ADM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_DISPO_ADM
+
+	column QTE_STK_ENT_DISPO_ADM_UVC
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_DISPO_ADM_UVC
+
+	column QTE_STK_ENT_DISPO_ADM_UVC_CM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_DISPO_ADM_UVC_CM
+
+	column QTE_STK_ENT_IN_INFO_LOG
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_IN_INFO_LOG
+
+	column QTE_STK_ENT_IN_INFO_LOG_UVC
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_IN_INFO_LOG_UVC
+
+	column QTE_STK_ENT_IN_INFO_LOG_UVC_CM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_IN_INFO_LOG_UVC_CM
+
+	column QTE_STK_ENT_INDISPO_ADM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_INDISPO_ADM
+
+	column QTE_STK_ENT_INDISPO_ADM_UVC
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_INDISPO_ADM_UVC
+
+	column QTE_STK_ENT_INDISPO_ADM_UVC_CM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_INDISPO_ADM_UVC_CM
+
+	column QTE_STK_ENT_INFO_LOG
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_INFO_LOG
+
+	column QTE_STK_ENT_INFO_LOG_UVC
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_INFO_LOG_UVC
+
+	column QTE_STK_ENT_INFO_LOG_UVC_CM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_INFO_LOG_UVC_CM
+
+	column QTE_STK_ENT_PHY_ADM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_PHY_ADM
+
+	column QTE_STK_ENT_PHY_ADM_UVC
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_PHY_ADM_UVC
+
+	column QTE_STK_ENT_PHY_ADM_UVC_CM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_PHY_ADM_UVC_CM
+
+	column QTE_STK_ENT_RESERVE_WEB
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_ENT_RESERVE_WEB
+
+	column TAU_DEV_VERS_EUR
+		dataType: int64
+		sourceColumn: TAU_DEV_VERS_EUR
+
+	column TAU_TVA
+		dataType: int64
+		sourceColumn: TAU_TVA
+
+	column TYP_CUG
+		dataType: string
+		sourceColumn: TYP_CUG
+
+	column TYP_PRX_VTE
+		dataType: string
+		sourceColumn: TYP_PRX_VTE
+
+	partition '2022 Q4' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2022/Q4")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_ENT_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_ENT_CUG)"(#"Sample File (F_STK_ENT_CUG)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_PHOTO_STK", type date}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_CM_PARENT", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"QTE_STK_ENT_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC_CM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC_CM", Int64.Type}, {"MNT_STK_ENT_PCM_HT_EUR", Currency.Type}, {"MNT_STK_ENT_PMD_HT_EUR", Currency.Type}, {"MNT_STK_ENT_VTE_CAT_TTC_EUR", Currency.Type}, {"MNT_STK_ENT_PRX_PRMP_NEGOCE", Currency.Type}, {"MNT_STK_ENT_DERN_PRX_ACHAT", Currency.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"PRX_PRMP_NEGOCE", Currency.Type}, {"PRX_DERN_PRX_ACHAT", Currency.Type}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_RESERVE_WEB", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				    #"Changed Type"
+
+	partition '2023 Q1' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q1")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_ENT_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_ENT_CUG)"(#"Sample File (F_STK_ENT_CUG)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_PHOTO_STK", type date}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_CM_PARENT", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"QTE_STK_ENT_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC_CM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC_CM", Int64.Type}, {"MNT_STK_ENT_PCM_HT_EUR", Currency.Type}, {"MNT_STK_ENT_PMD_HT_EUR", Currency.Type}, {"MNT_STK_ENT_VTE_CAT_TTC_EUR", Currency.Type}, {"MNT_STK_ENT_PRX_PRMP_NEGOCE", Currency.Type}, {"MNT_STK_ENT_DERN_PRX_ACHAT", Currency.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"PRX_PRMP_NEGOCE", Currency.Type}, {"PRX_DERN_PRX_ACHAT", Currency.Type}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_RESERVE_WEB", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				    #"Changed Type"
+
+	partition '2023 Q2' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q2")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_ENT_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_ENT_CUG)"(#"Sample File (F_STK_ENT_CUG)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_PHOTO_STK", type date}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_CM_PARENT", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"QTE_STK_ENT_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC_CM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC_CM", Int64.Type}, {"MNT_STK_ENT_PCM_HT_EUR", Currency.Type}, {"MNT_STK_ENT_PMD_HT_EUR", Currency.Type}, {"MNT_STK_ENT_VTE_CAT_TTC_EUR", Currency.Type}, {"MNT_STK_ENT_PRX_PRMP_NEGOCE", Currency.Type}, {"MNT_STK_ENT_DERN_PRX_ACHAT", Currency.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"PRX_PRMP_NEGOCE", Currency.Type}, {"PRX_DERN_PRX_ACHAT", Currency.Type}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_RESERVE_WEB", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				    #"Changed Type"
+
+	partition '2023 Q3' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q3")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_ENT_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_ENT_CUG)"(#"Sample File (F_STK_ENT_CUG)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_PHOTO_STK", type date}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_CM_PARENT", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"QTE_STK_ENT_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC_CM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC_CM", Int64.Type}, {"MNT_STK_ENT_PCM_HT_EUR", Currency.Type}, {"MNT_STK_ENT_PMD_HT_EUR", Currency.Type}, {"MNT_STK_ENT_VTE_CAT_TTC_EUR", Currency.Type}, {"MNT_STK_ENT_PRX_PRMP_NEGOCE", Currency.Type}, {"MNT_STK_ENT_DERN_PRX_ACHAT", Currency.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"PRX_PRMP_NEGOCE", Currency.Type}, {"PRX_DERN_PRX_ACHAT", Currency.Type}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_RESERVE_WEB", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				    #"Changed Type"
+
+	partition '2023 Q4' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q4")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_ENT_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_ENT_CUG)"(#"Sample File (F_STK_ENT_CUG)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_PHOTO_STK", type date}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_CM_PARENT", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"QTE_STK_ENT_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC_CM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC_CM", Int64.Type}, {"MNT_STK_ENT_PCM_HT_EUR", Currency.Type}, {"MNT_STK_ENT_PMD_HT_EUR", Currency.Type}, {"MNT_STK_ENT_VTE_CAT_TTC_EUR", Currency.Type}, {"MNT_STK_ENT_PRX_PRMP_NEGOCE", Currency.Type}, {"MNT_STK_ENT_DERN_PRX_ACHAT", Currency.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"PRX_PRMP_NEGOCE", Currency.Type}, {"PRX_DERN_PRX_ACHAT", Currency.Type}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_RESERVE_WEB", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				    #"Changed Type"
+
+	partition '2024 Q1' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q1")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_ENT_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_ENT_CUG)"(#"Sample File (F_STK_ENT_CUG)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_PHOTO_STK", type date}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_CM_PARENT", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"QTE_STK_ENT_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC_CM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC_CM", Int64.Type}, {"MNT_STK_ENT_PCM_HT_EUR", Currency.Type}, {"MNT_STK_ENT_PMD_HT_EUR", Currency.Type}, {"MNT_STK_ENT_VTE_CAT_TTC_EUR", Currency.Type}, {"MNT_STK_ENT_PRX_PRMP_NEGOCE", Currency.Type}, {"MNT_STK_ENT_DERN_PRX_ACHAT", Currency.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"PRX_PRMP_NEGOCE", Currency.Type}, {"PRX_DERN_PRX_ACHAT", Currency.Type}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_RESERVE_WEB", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				    #"Changed Type"
+
+	partition '2024 Q2' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q2")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_ENT_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_ENT_CUG)"(#"Sample File (F_STK_ENT_CUG)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_PHOTO_STK", type date}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_CM_PARENT", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"QTE_STK_ENT_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC_CM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC_CM", Int64.Type}, {"MNT_STK_ENT_PCM_HT_EUR", Currency.Type}, {"MNT_STK_ENT_PMD_HT_EUR", Currency.Type}, {"MNT_STK_ENT_VTE_CAT_TTC_EUR", Currency.Type}, {"MNT_STK_ENT_PRX_PRMP_NEGOCE", Currency.Type}, {"MNT_STK_ENT_DERN_PRX_ACHAT", Currency.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"PRX_PRMP_NEGOCE", Currency.Type}, {"PRX_DERN_PRX_ACHAT", Currency.Type}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_RESERVE_WEB", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				    #"Changed Type"
+
+	partition '2024 Q3' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q3")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_ENT_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_ENT_CUG)"(#"Sample File (F_STK_ENT_CUG)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_PHOTO_STK", type date}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_CM_PARENT", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"QTE_STK_ENT_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC_CM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC_CM", Int64.Type}, {"MNT_STK_ENT_PCM_HT_EUR", Currency.Type}, {"MNT_STK_ENT_PMD_HT_EUR", Currency.Type}, {"MNT_STK_ENT_VTE_CAT_TTC_EUR", Currency.Type}, {"MNT_STK_ENT_PRX_PRMP_NEGOCE", Currency.Type}, {"MNT_STK_ENT_DERN_PRX_ACHAT", Currency.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"PRX_PRMP_NEGOCE", Currency.Type}, {"PRX_DERN_PRX_ACHAT", Currency.Type}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_RESERVE_WEB", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				    #"Changed Type"
+
+	partition '2024 Q4' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q4")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_ENT_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_ENT_CUG)"(#"Sample File (F_STK_ENT_CUG)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_PHOTO_STK", type date}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_CM_PARENT", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"QTE_STK_ENT_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC_CM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC_CM", Int64.Type}, {"MNT_STK_ENT_PCM_HT_EUR", Currency.Type}, {"MNT_STK_ENT_PMD_HT_EUR", Currency.Type}, {"MNT_STK_ENT_VTE_CAT_TTC_EUR", Currency.Type}, {"MNT_STK_ENT_PRX_PRMP_NEGOCE", Currency.Type}, {"MNT_STK_ENT_DERN_PRX_ACHAT", Currency.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"PRX_PRMP_NEGOCE", Currency.Type}, {"PRX_DERN_PRX_ACHAT", Currency.Type}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_RESERVE_WEB", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				    #"Changed Type"
+
+	partition '2025 Q1' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2025/Q1")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_ENT_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_ENT_CUG)"(#"Sample File (F_STK_ENT_CUG)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_PHOTO_STK", type date}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_CM_PARENT", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"QTE_STK_ENT_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_PHY_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_DISPO_ADM_UVC_CM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC", Int64.Type}, {"QTE_STK_ENT_INDISPO_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDMAG_ADM_UVC_CM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC", Int64.Type}, {"QTE_ENT_ENC_CMDFOU_ADM_UVC_CM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC", Int64.Type}, {"QTE_SOUS_DOUANE_ADM_UVC_CM", Int64.Type}, {"MNT_STK_ENT_PCM_HT_EUR", Currency.Type}, {"MNT_STK_ENT_PMD_HT_EUR", Currency.Type}, {"MNT_STK_ENT_VTE_CAT_TTC_EUR", Currency.Type}, {"MNT_STK_ENT_PRX_PRMP_NEGOCE", Currency.Type}, {"MNT_STK_ENT_DERN_PRX_ACHAT", Currency.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"PRX_PRMP_NEGOCE", Currency.Type}, {"PRX_DERN_PRX_ACHAT", Currency.Type}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC", Int64.Type}, {"QTE_STK_ENT_IN_INFO_LOG_UVC_CM", Int64.Type}, {"QTE_STK_ENT_RESERVE_WEB", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				    #"Changed Type"
+

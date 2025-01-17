@@ -1,0 +1,418 @@
+table F_CMD_FRN
+	isHidden
+
+	column AAT
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: AAT
+
+	column COD_CUG_CM_PARENT
+		dataType: string
+		summarizeBy: none
+		sourceColumn: COD_CUG_CM_PARENT
+
+	column COD_CUG_SAISON
+		dataType: string
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_CUG_SAISON
+
+	column COD_EAN
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_EAN
+
+	column COD_ETA_CMD_FRN
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_ETA_CMD_FRN
+
+	column COD_FRN_CNUF_CIF
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_FRN_CNUF_CIF
+
+	column COD_FRN_CNUF_CIF_ORIGINE
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_FRN_CNUF_CIF_ORIGINE
+
+	column COD_PAYS_IMPORT
+		dataType: string
+		summarizeBy: none
+		sourceColumn: COD_PAYS_IMPORT
+
+	column COD_PAYS_ORIGIN
+		dataType: string
+		summarizeBy: none
+		sourceColumn: COD_PAYS_ORIGIN
+
+	column COD_REF_COMM
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_REF_COMM
+
+	column COD_REF_NOMENC
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_REF_NOMENC
+
+	column COD_SOCIETE
+		dataType: string
+		summarizeBy: none
+		sourceColumn: COD_SOCIETE
+
+	column COD_WH_PHY
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_WH_PHY
+
+	column COD_WH_VRT
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_WH_VRT
+
+	column DAT_CMD_FRN_IMPL_PROB
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_CMD_FRN_IMPL_PROB
+
+	column DAT_CMD_FRN_LIV_PRV
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_CMD_FRN_LIV_PRV
+
+	column DAT_CMD_FRN_SAISIE
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_CMD_FRN_SAISIE
+
+	column DAT_LID_INI
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_LID_INI
+
+	column DAT_LID_REV
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_LID_REV
+
+	column DAT_LRD_INI
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_LRD_INI
+
+	column DAT_LRD_REV
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_LRD_REV
+
+	column DAT_MDD_IMPORT_INI
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_MDD_IMPORT_INI
+
+	column DAT_MDD_IMPORT_REV
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_MDD_IMPORT_REV
+
+	column DAT_MDD_INI
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_MDD_INI
+
+	column DAT_MDD_REV
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_MDD_REV
+
+	column DEVISE_CMF
+		dataType: string
+		sourceColumn: DEVISE_CMF
+
+	column FLG_ACTUA
+		dataType: string
+		sourceColumn: FLG_ACTUA
+
+	column FLG_REASSORT
+		dataType: string
+		sourceColumn: FLG_REASSORT
+
+	column INCOTERM_ACH
+		dataType: string
+		sourceColumn: INCOTERM_ACH
+
+	column INCOTERM_VTE
+		dataType: string
+		sourceColumn: INCOTERM_VTE
+
+	column LIB_PCB_CUG
+		dataType: string
+		sourceColumn: LIB_PCB_CUG
+
+	column LIB_PCB_CUG_COMPOSANT
+		dataType: string
+		sourceColumn: LIB_PCB_CUG_COMPOSANT
+
+	column LIB_SPCB_CUG
+		dataType: string
+		sourceColumn: LIB_SPCB_CUG
+
+	column LIB_SPCB_CUG_COMPOSANT
+		dataType: string
+		sourceColumn: LIB_SPCB_CUG_COMPOSANT
+
+	column MNT_QTE_CMD_FRN_PRX_ACH_CENTRA
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: MNT_QTE_CMD_FRN_PRX_ACH_CENTRA
+
+	column MNT_QTE_CMD_FRN_PRX_CESSION_MA
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: MNT_QTE_CMD_FRN_PRX_CESSION_MA
+
+	column MNT_QTE_CMD_FRN_PRX_PMD_HT_EUR
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: MNT_QTE_CMD_FRN_PRX_PMD_HT_EUR
+
+	column MNT_QTE_CMD_FRN_PRX_REVIENT_EU
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: MNT_QTE_CMD_FRN_PRX_REVIENT_EU
+
+	column MNT_QTE_CMD_FRN_PRX_VTE_CAT_TT
+		dataType: decimal
+		formatString: #,##0.0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: MNT_QTE_CMD_FRN_PRX_VTE_CAT_TT
+
+	column MODE_PMT
+		dataType: string
+		sourceColumn: MODE_PMT
+
+	column MOTIF_LID
+		dataType: string
+		sourceColumn: MOTIF_LID
+
+	column MOTIF_LRD
+		dataType: string
+		sourceColumn: MOTIF_LRD
+
+	column MOTIF_MDD
+		dataType: string
+		sourceColumn: MOTIF_MDD
+
+	column MOTIF_MDD_IMPORT
+		dataType: string
+		sourceColumn: MOTIF_MDD_IMPORT
+
+	column NBR_J_DELAI
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: NBR_J_DELAI
+
+	column NBR_PCB_CUG
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: NBR_PCB_CUG
+
+	column NBR_PCB_CUG_COMPOSANT
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: NBR_PCB_CUG_COMPOSANT
+
+	column NBR_SPCB_CUG
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: NBR_SPCB_CUG
+
+	column NBR_SPCB_CUG_COMPOSANT
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: NBR_SPCB_CUG_COMPOSANT
+
+	column NUM_CMD_CLI
+		dataType: string
+		sourceColumn: NUM_CMD_CLI
+
+	column NUM_CMD_FRN
+		dataType: int64
+		formatString: #,##0
+		summarizeBy: none
+		sourceColumn: NUM_CMD_FRN
+
+	column NUM_DOSSIER_TRANSIT_CMD_FRN
+		dataType: string
+		sourceColumn: NUM_DOSSIER_TRANSIT_CMD_FRN
+
+	column NUM_LIG_CMD_FRN
+		dataType: int64
+		formatString: #,##0
+		summarizeBy: none
+		sourceColumn: NUM_LIG_CMD_FRN
+
+	column PRX_ACH_CENTRALE_COMPO_DEV_CMF
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: PRX_ACH_CENTRALE_COMPO_DEV_CMF
+
+	column PRX_ACH_CENTRALE_COMPOSANT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: PRX_ACH_CENTRALE_COMPOSANT_EUR
+
+	column PRX_ACH_CENTRALE_DEVISE_CMF
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: PRX_ACH_CENTRALE_DEVISE_CMF
+
+	column PRX_ACH_CENTRALE_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: PRX_ACH_CENTRALE_EUR
+
+	column PRX_CESSION_MAG_COMPOSANT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: PRX_CESSION_MAG_COMPOSANT_EUR
+
+	column PRX_CESSION_MAG_EUR
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: PRX_CESSION_MAG_EUR
+
+	column PRX_PMD_HT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: PRX_PMD_HT_EUR
+
+	column PRX_REVIENT_COMPOSANT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: PRX_REVIENT_COMPOSANT_EUR
+
+	column PRX_REVIENT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: PRX_REVIENT_EUR
+
+	column PRX_VTE_CAT_TTC_DEV
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: PRX_VTE_CAT_TTC_DEV
+
+	column QTE_CMD_FRN
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: QTE_CMD_FRN
+
+	column QTE_CMD_FRN_UVC
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: QTE_CMD_FRN_UVC
+
+	column QTE_CMD_FRN_UVC_CM
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		summarizeBy: sum
+		sourceColumn: QTE_CMD_FRN_UVC_CM
+
+	column TAU_TVA
+		dataType: int64
+		sourceColumn: TAU_TVA
+
+	column TX_CONV_DEVISE_CMF_DEVISE_RMS
+		dataType: decimal
+		sourceColumn: TX_CONV_DEVISE_CMF_DEVISE_RMS
+
+	column TYP_CMF_PER
+		dataType: string
+		sourceColumn: TYP_CMF_PER
+
+	column TYP_CUG
+		dataType: string
+		sourceColumn: TYP_CUG
+
+	column TYP_STOCKAGE
+		dataType: string
+		sourceColumn: TYP_STOCKAGE
+
+	column TYP_VENTE
+		dataType: string
+		sourceColumn: TYP_VENTE
+
+	partition partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "F_CMD_FRN") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"NUM_CMD_FRN", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"COD_ETA_CMD_FRN", Int64.Type}, {"NUM_LIG_CMD_FRN", Int64.Type}, {"COD_FRN_CNUF_CIF", Int64.Type}, {"COD_FRN_CNUF_CIF_ORIGINE", Int64.Type}, {"COD_CUG_CM_PARENT", type any}, {"COD_SOCIETE", type any}, {"COD_EAN", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB_CUG", Int64.Type}, {"LIB_PCB_CUG", type text}, {"NBR_SPCB_CUG", Int64.Type}, {"LIB_SPCB_CUG", type text}, {"NBR_PCB_CUG_COMPOSANT", Int64.Type}, {"LIB_PCB_CUG_COMPOSANT", type text}, {"NBR_SPCB_CUG_COMPOSANT", Int64.Type}, {"LIB_SPCB_CUG_COMPOSANT", type text}, {"NUM_DOSSIER_TRANSIT_CMD_FRN", type text}, {"TYP_STOCKAGE", type text}, {"TYP_VENTE", type text}, {"DAT_CMD_FRN_SAISIE", type date}, {"DAT_CMD_FRN_LIV_PRV", type date}, {"DAT_CMD_FRN_IMPL_PROB", type date}, {"NBR_J_DELAI", Int64.Type}, {"QTE_CMD_FRN", Int64.Type}, {"QTE_CMD_FRN_UVC", Int64.Type}, {"QTE_CMD_FRN_UVC_CM", Int64.Type}, {"PRX_ACH_CENTRALE_EUR", Currency.Type}, {"PRX_ACH_CENTRALE_COMPOSANT_EUR", Currency.Type}, {"PRX_REVIENT_EUR", Currency.Type}, {"PRX_REVIENT_COMPOSANT_EUR", Currency.Type}, {"PRX_CESSION_MAG_EUR", Int64.Type}, {"PRX_CESSION_MAG_COMPOSANT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"TAU_TVA", Int64.Type}, {"MNT_QTE_CMD_FRN_PRX_ACH_CENTRA", Currency.Type}, {"MNT_QTE_CMD_FRN_PRX_REVIENT_EU", Currency.Type}, {"MNT_QTE_CMD_FRN_PRX_PMD_HT_EUR", Currency.Type}, {"MNT_QTE_CMD_FRN_PRX_CESSION_MA", Currency.Type}, {"MNT_QTE_CMD_FRN_PRX_VTE_CAT_TT", Currency.Type}, {"PRX_ACH_CENTRALE_DEVISE_CMF", Currency.Type}, {"PRX_ACH_CENTRALE_COMPO_DEV_CMF", Currency.Type}, {"DEVISE_CMF", type text}, {"TX_CONV_DEVISE_CMF_DEVISE_RMS", Currency.Type}, {"MODE_PMT", type text}, {"INCOTERM_ACH", type text}, {"INCOTERM_VTE", type text}, {"NUM_CMD_CLI", type text}, {"AAT", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"COD_PAYS_IMPORT", type text}, {"COD_PAYS_ORIGIN", type text}, {"DAT_LID_INI", type date}, {"DAT_LID_REV", type date}, {"MOTIF_LID", type any}, {"DAT_LRD_INI", type date}, {"DAT_LRD_REV", type date}, {"MOTIF_LRD", type any}, {"DAT_MDD_INI", type date}, {"DAT_MDD_REV", type date}, {"MOTIF_MDD", type text}, {"DAT_MDD_IMPORT_INI", type date}, {"DAT_MDD_IMPORT_REV", type date}, {"MOTIF_MDD_IMPORT", type text}, {"FLG_REASSORT", type text}, {"FLG_ACTUA", type text}, {"TYP_CMF_PER", type text}, {"COD_WH_VRT", Int64.Type}, {"COD_CUG_SAISON", type text}}, "fr-FR")
+				in
+				
+				    #"Changed Type"
+

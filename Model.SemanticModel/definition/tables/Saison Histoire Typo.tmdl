@@ -1,0 +1,99 @@
+/// Dimension
+table 'Saison Histoire Typo'
+
+	column COD_HISTOIRE
+		dataType: string
+		sourceColumn: COD_HISTOIRE
+
+	column COD_PERIODE
+		dataType: string
+		sourceColumn: COD_PERIODE
+
+	column COD_RAYON
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_RAYON
+
+	column COD_REF_COMM
+		dataType: int64
+		isKey
+		summarizeBy: none
+		sourceColumn: COD_REF_COMM
+
+	column COD_SAISON
+		dataType: string
+		sourceColumn: COD_SAISON
+
+	column DAT_CRE_SPOC
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_CRE_SPOC
+
+	column DAT_DEB_HISTOIRE
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_DEB_HISTOIRE
+
+	column DAT_DEB_PERIODE
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_DEB_PERIODE
+
+	column DAT_FIN_HISTOIRE
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_FIN_HISTOIRE
+
+	column DAT_FIN_PERIODE
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_FIN_PERIODE
+
+	column DAT_MOD_SPOC
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_MOD_SPOC
+
+	column LIB_HISTOIRE
+		dataType: string
+		sourceColumn: LIB_HISTOIRE
+
+	column LIB_PERIODE
+		dataType: string
+		sourceColumn: LIB_PERIODE
+
+	column LIB_SS_TYP_HIST
+		dataType: string
+		sourceColumn: LIB_SS_TYP_HIST
+
+	column LIB_TYP_HISTOIRE
+		dataType: string
+		sourceColumn: LIB_TYP_HISTOIRE
+
+	column TYPOLOGY = if('Saison Histoire Typo'[LIB_SS_TYP_HIST] IN {"PROMO", "PROMO TG"}, "PROMO", "FDR" )
+
+	column COD_SAISON-1
+		dataType: string
+		sourceColumn: COD_SAISON-1
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "D_REF_COMM") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Columns=15, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"COD_REF_COMM", Int64.Type}, {"COD_SAISON", type text}, {"COD_HISTOIRE", type text}, {"LIB_HISTOIRE", type text}, {"LIB_TYP_HISTOIRE", type text}, {"LIB_SS_TYP_HIST", type text}, {"DAT_DEB_HISTOIRE", type date}, {"DAT_FIN_HISTOIRE", type date}, {"COD_PERIODE", type text}, {"LIB_PERIODE", type text}, {"DAT_DEB_PERIODE", type date}, {"DAT_FIN_PERIODE", type date}, {"DAT_CRE_SPOC", type date}, {"DAT_MOD_SPOC", type date}, {"COD_RAYON", Int64.Type}}),
+				     #"Personnalisée ajoutée" = Table.AddColumn(#"Changed Type", "Personnalisé", each Text.Start( [COD_SAISON],1)),
+				    #"Personnalisée ajoutée1" = Table.AddColumn(#"Personnalisée ajoutée", "Personnalisé.1", each if List.Contains( { "INC", "NON" }, [COD_SAISON] ) then [COD_SAISON] else Number.FromText(Text.End([COD_SAISON],2))-1),
+				    #"Colonne fusionnée insérée" = Table.AddColumn(#"Personnalisée ajoutée1", "Fusionné", each Text.Combine({[Personnalisé], Text.From([Personnalisé.1], "en-US")}), type text),
+				    #"Colonnes supprimées" = Table.RemoveColumns(#"Colonne fusionnée insérée",{"Personnalisé", "Personnalisé.1"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Colonnes supprimées",{{"Fusionné", "COD_SAISON-1"}})
+				in
+				    #"Renamed Columns"
+

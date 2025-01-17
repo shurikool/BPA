@@ -1,0 +1,193 @@
+relationship Relationship
+	fromColumn: F_STK_THE_MAG_CUG.COD_MAGASIN_RMS
+	toColumn: Magasin.COD_MAGASIN_RMS
+
+relationship 'Relationship 1'
+	fromColumn: F_STK_THE_MAG_CUG.COD_REF_COMM
+	toColumn: 'Saison Histoire Typo'.COD_REF_COMM
+
+relationship 'Relationship 2'
+	fromColumn: F_STK_THE_MAG_CUG.COD_REF_NOMENC
+	toColumn: Nomenclature.COD_REF_NOMENC
+
+relationship 'Relationship 3'
+	fromColumn: F_STK_THE_MAG_CUG.DAT_PHOTO_STK
+	toColumn: Calendrier.DAT
+
+relationship 'Relationship 4'
+	isActive: false
+	fromColumn: F_STK_THE_MAG_CUG.DAT_PHOTO_STK
+	toColumn: Calendrier.DAT_N1
+
+relationship 'Relationship 5'
+	fromColumn: F_REC_FRN_INFOLOG.COD_CUG_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+
+relationship 'Relationship 6'
+	fromColumn: F_REC_FRN_INFOLOG.DAT_REC_FRN_REEL
+	toColumn: Calendrier.DAT
+
+relationship 'Relationship 7'
+	isActive: false
+	fromColumn: F_REC_FRN_INFOLOG.DAT_REC_FRN_REEL
+	toColumn: Calendrier.DAT_N1
+
+relationship 'Relationship 9'
+	fromColumn: F_STK_ENT_CUG.COD_REF_COMM
+	toColumn: 'Saison Histoire Typo'.COD_REF_COMM
+
+relationship 'Relationship 10'
+	fromColumn: F_STK_ENT_CUG.COD_REF_NOMENC
+	toColumn: Nomenclature.COD_REF_NOMENC
+
+relationship 'Relationship 11'
+	fromColumn: F_STK_ENT_CUG.DAT_PHOTO_STK
+	toColumn: Calendrier.DAT
+
+relationship 'Relationship 12'
+	fromColumn: F_CMD_FRN.COD_CUG_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+
+relationship 'Relationship 13'
+	fromColumn: F_CMD_FRN.COD_FRN_CNUF_CIF
+	toColumn: Fournisseur.COD_FRN_CNUF_CIF
+
+relationship 'Relationship 14'
+	fromColumn: F_CMD_FRN.COD_REF_COMM
+	toColumn: 'Saison Histoire Typo'.COD_REF_COMM
+
+relationship 'Relationship 15'
+	fromColumn: F_CMD_FRN.COD_REF_NOMENC
+	toColumn: Nomenclature.COD_REF_NOMENC
+
+relationship 'Relationship 16'
+	fromColumn: F_VTE_MAG_CUG.COD_CUG_COD_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+
+relationship 'Relationship 17'
+	fromColumn: F_VTE_MAG_CUG.COD_MAGASIN_RMS
+	toColumn: Magasin.COD_MAGASIN_RMS
+
+relationship 'Relationship 18'
+	fromColumn: F_VTE_MAG_CUG.COD_REF_COMM
+	toColumn: 'Saison Histoire Typo'.COD_REF_COMM
+
+relationship 'Relationship 19'
+	fromColumn: F_VTE_MAG_CUG.COD_REF_NOMENC
+	toColumn: Nomenclature.COD_REF_NOMENC
+
+relationship 'Relationship 20'
+	fromColumn: F_VTE_MAG_CUG.DAT_VTE
+	toColumn: Calendrier.DAT
+
+relationship 'Relationship 21'
+	isActive: false
+	fromColumn: F_VTE_MAG_CUG.DAT_VTE
+	toColumn: Calendrier.DAT_N1
+
+relationship 3cb06b7b-2352-4810-8b9c-01634cf40d63
+	fromColumn: V_TD_FA_BESOIN_REFCOMM.COD_REF_COMM
+	toColumn: 'Saison Histoire Typo'.COD_REF_COMM
+
+relationship b47eda43-1f65-4d41-a299-f0e7e6d8a98a
+	fromColumn: V_TD_FA_BESOIN_REFCOMM.DAT
+	toColumn: Calendrier.DAT
+
+relationship 1ef4162d-24d9-4bde-bfed-6e3ea9c935df
+	fromColumn: V_TD_FA_BESOIN_REFCOMM.COD_CUG_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+
+relationship fc2faf34-bb89-4436-9c34-997b16103b20
+	fromColumn: V_TD_FA_BESOIN_REFCOMM.COD_MAGASIN_RMS
+	toColumn: Magasin.COD_MAGASIN_RMS
+
+relationship 8499e17e-e9c2-40ef-8a04-e12fb3656ced
+	fromColumn: V_TD_FA_BESOIN_REFCOMM.COD_REF_NOMENC
+	toColumn: Nomenclature.COD_REF_NOMENC
+
+relationship 48efca5c-7032-44c4-aeeb-3aedc3cb7726
+	crossFilteringBehavior: bothDirections
+	fromColumn: Phase.COD_REF_COMM
+	toColumn: 'Saison Histoire Typo'.COD_REF_COMM
+
+relationship 6fce69d0-1388-44a2-aa26-d3c8986ea17b
+	fromColumn: V_TD_CMD_REC_FRN.COD_REF_NOMENC
+	toColumn: Nomenclature.COD_REF_NOMENC
+
+relationship 0618e18c-169d-4ff2-ab29-0e11c26d8bcd
+	fromColumn: V_TD_CMD_REC_FRN.COD_REF_COMM
+	toColumn: 'Saison Histoire Typo'.COD_REF_COMM
+
+relationship 82d56bde-adee-4200-a9d2-ddc0e933bc84
+	fromColumn: V_TD_CMD_REC_FRN.COD_CUG_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+
+relationship cb89ab14-f64c-4927-a88e-cdf44bcaa97a
+	fromColumn: 'Reference Format Mag'.COD_MAGASIN_RMS
+	toColumn: Magasin.COD_MAGASIN_RMS
+
+relationship 529d4fa9-ad74-4318-a75a-580889b5e3c2
+	fromColumn: 'Reference Format Mag'.COD_REF_NOMENC
+	toColumn: Nomenclature.COD_REF_NOMENC
+
+relationship 4f6dab2c-1aa2-4395-8773-f94e631a4b39
+	fromColumn: 'Reference Format Mag'.COD_REF_COMM
+	toColumn: 'Saison Histoire Typo'.COD_REF_COMM
+
+relationship 0b03e475-1053-49c8-b90b-259f4678cadd
+	fromColumn: Composant.COD_CUG_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+
+relationship 55c85868-b752-42d6-ab61-36f77ff384e7
+	crossFilteringBehavior: bothDirections
+	fromColumn: Attribut.COD_CUG_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+
+relationship 35a4f75d-8c6b-42e9-9230-50e4cd192cd3
+	isActive: false
+	fromColumn: 'Prix Produit Pays'.DAT_DEB_APP_TARIF
+	toColumn: Calendrier.DAT
+
+relationship 4b2a320c-bcc5-406d-9c69-dbb971231f6d
+	fromColumn: 'Prix Produit Pays'.DAT_FIN_APP_TARIF
+	toColumn: Calendrier.DAT
+
+relationship b3cfd0c3-b72c-4e1c-97b5-89edb5b409dc
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'Prix Produit Pays'.COD_CUG
+	toColumn: 'Nomenclature Produit'.COD_CUG
+
+relationship 917e3bdb-1f75-421a-bee6-214dafd6438c
+	fromColumn: F_ALLOC_MAG_CUG.COD_CUG_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+
+relationship 6248c137-ee49-4a05-a7bc-59bf8c35eaf8
+	fromColumn: F_ALLOC_MAG_CUG.COD_MAGASIN_RMS
+	toColumn: Magasin.COD_MAGASIN_RMS
+
+relationship ba72d81a-ab03-4ab3-adeb-097905455048
+	fromColumn: F_ALLOC_MAG_CUG.DAT_ALLOUEE
+	toColumn: Calendrier.DAT
+
+relationship ee12cc1f-1a48-45dc-accb-1f71182a6c51
+	fromColumn: F_ALLOC_MAG_CUG.COD_REF_NOMENC
+	toColumn: Nomenclature.COD_REF_NOMENC
+
+relationship ca1729ee-e232-4b73-83d3-450bc3b162d3
+	fromColumn: F_ALLOC_MAG_CUG.COD_REF_COMM
+	toColumn: 'Saison Histoire Typo'.COD_REF_COMM
+
+relationship eae8172c-9e81-4bf7-aa47-192ad96060b0
+	fromColumn: F_STK_ENT_CUG.COD_CUG_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+
+relationship 924b746b-150c-4a88-950c-83f76690eeac
+	fromColumn: F_STK_THE_MAG_CUG.COD_CUG_COD_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+
+relationship 67d15a52-dfae-4920-b0c0-4d14db66dd96
+	isActive: false
+	fromColumn: Composant.COD_CUG_COMPOSANT_SAISON
+	toColumn: 'Nomenclature Produit'.COD_CUG_SAISON
+

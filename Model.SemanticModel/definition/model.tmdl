@@ -1,0 +1,38 @@
+model Model
+	culture: fr-FR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+
+annotation ClientCompatibilityLevel = 600
+
+annotation TabularEditor_SerializeOptions = {"IgnoreInferredObjects":true,"IgnoreInferredProperties":true,"IgnoreTimestamps":true,"SplitMultilineStrings":true,"PrefixFilenames":false,"LocalTranslations":true,"LocalPerspectives":false,"LocalRelationships":true,"Levels":["Data Sources","Perspectives","Roles","Tables","Tables/Calculation Items","Tables/Columns","Tables/Hierarchies","Tables/Measures","Tables/Partitions"]}
+
+annotation TabularEditor_SaveSensitive = 1
+
+annotation __TEdtr = 1
+
+ref table Calendrier
+ref table 'Nomenclature Produit'
+ref table Fournisseur
+ref table Magasin
+ref table 'Saison Histoire Typo'
+ref table Nomenclature
+ref table F_VTE_MAG_CUG
+ref table F_STK_THE_MAG_CUG
+ref table F_REC_FRN_INFOLOG
+ref table _Mesures
+ref table F_STK_ENT_CUG
+ref table F_CMD_FRN
+ref table V_TD_FA_BESOIN_REFCOMM
+ref table Phase
+ref table V_TD_CMD_REC_FRN
+ref table Composant
+ref table 'Prix Produit Pays'
+ref table 'Reference Format Mag'
+ref table Attribut
+ref table F_ALLOC_MAG_CUG
+
+ref perspective Expert
+
+ref cultureInfo fr-FR
+ref cultureInfo en-GB
+

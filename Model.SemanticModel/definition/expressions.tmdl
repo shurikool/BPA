@@ -1,0 +1,134 @@
+expression P_AZB =
+		let
+		    Source = #"AzureBlobs",
+		    src1 = Source{[Name="src"]}[Data],
+		  #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_ALLOC_MAG") and [Extension] = ".gz"),
+		   #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+		    FILE = #"Sorted Rows"{0}[Content],
+		    Decompress = Binary.Decompress(FILE, Compression.GZip),
+		    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+
+expression 'Sample File' =
+		let
+		    Source = AzureBlobs,
+		    src1 = Source{[Name="src"]}[Data],
+		    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and Text.Contains([Name], "dummy") and [Extension] = ".gz"),
+		    Navigation1 = #"Filtered Rows"{0}[Content]
+		in
+		    Navigation1
+
+expression FILE =
+		let
+		    Source = #"Sample File" meta [IsParameterQuery=true, BinaryIdentifier=#"Sample File", Type="Binary", IsParameterQueryRequired=true]
+		in
+		    Source
+
+expression 'Transform Sample File' =
+		let
+		    Source = Csv.Document(Binary.Decompress(FILE, Compression.GZip),[Delimiter="|", Columns=23, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+
+expression 'Transform File (F_VTE_MAG_CUG)' =
+		let
+		    Source = (FILE) => let
+		        Source = Csv.Document(Binary.Decompress(FILE, Compression.GZip),[Delimiter="|", Columns=23, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		        #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		    in
+		        #"Promoted Headers"
+		in
+		    Source
+
+expression 'Sample File (F_STK_THE_MAG_CUG)' =
+		let
+		    Source = AzureBlobs,
+		    src1 = Source{[Name="src"]}[Data],
+		    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and Text.Contains([Name], "dummy") and [Extension] = ".gz"),
+		    Navigation1 = #"Filtered Rows"{0}[Content]
+		in
+		    Navigation1
+
+expression 'Transform File (F_STK_THE_MAG_CUG)' =
+		let
+		    Source = (FILE) => let
+		        Source = Csv.Document(Binary.Decompress(FILE, Compression.GZip),[Delimiter="|", Columns=20, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		        #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		    in
+		        #"Promoted Headers"
+		in
+		    Source
+
+expression 'Transform File (F_REC_FRN_INFOLOG)' =
+		let
+		    Source = (FILE) => let
+		        Source = Csv.Document(Binary.Decompress(FILE, Compression.GZip),[Delimiter="|", Columns=18, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		        #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		    in
+		        #"Promoted Headers"
+		in
+		    Source
+
+expression 'Sample File (F_REC_FRN_INFOLOG)' =
+		let
+		    Source = AzureBlobs,
+		    src1 = Source{[Name="src"]}[Data],
+		    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_REC_FRN_INFO") and Text.Contains([Name], "dummy") and [Extension] = ".gz"),
+		    Navigation1 = #"Filtered Rows"{0}[Content]
+		in
+		    Navigation1
+
+expression 'Sample File (F_CMD_FRN)' =
+		let
+		    Source = AzureBlobs,
+		    src1 = Source{[Name="src"]}[Data],
+		    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_CMD_FRN") and Text.Contains([Name], "dummy") and [Extension] = ".gz"),
+		    Navigation1 = #"Filtered Rows"{0}[Content]
+		in
+		    Navigation1
+
+expression 'Transform File (F_CMD_FRN)' =
+		let
+		    Source = (FILE) => let
+		        Source = Csv.Document(Binary.Decompress(FILE, Compression.GZip),[Delimiter="|", Columns=72, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		        #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		    in
+		        #"Promoted Headers"
+		in
+		    Source
+
+expression 'Transform File (F_STK_ENT_CUG)' =
+		let
+		    Source = (FILE) => let
+		        Source = Csv.Document(Binary.Decompress(FILE, Compression.GZip),[Delimiter="|", Columns=47, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		        #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		    in
+		        #"Promoted Headers"
+		in
+		    Source
+
+expression 'Sample File (F_STK_ENT_CUG)' =
+		let
+		    Source = AzureBlobs,
+		    src1 = Source{[Name="src"]}[Data],
+		    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_ENT_CUG") and Text.Contains([Name], "dummy") and [Extension] = ".gz"),
+		    Navigation1 = #"Filtered Rows"{0}[Content]
+		in
+		    Navigation1
+
+expression D_CUG_COMPOSANT =
+		let
+		    Source = #"AzureBlobs",
+		    src1 = Source{[Name="src"]}[Data],
+		  #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "D_CUG_COMPOSANT") and [Extension] = ".gz"),
+		   #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+		    FILE = #"Sorted Rows"{0}[Content],
+		    Decompress = Binary.Decompress(FILE, Compression.GZip),
+		    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+

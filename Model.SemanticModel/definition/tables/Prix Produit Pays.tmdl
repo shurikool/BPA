@@ -1,0 +1,57 @@
+table 'Prix Produit Pays'
+
+	column COD_ARTICLE
+		dataType: string
+		sourceColumn: COD_ARTICLE
+
+	column COD_CUG
+		dataType: string
+		sourceColumn: COD_CUG
+
+	column COD_PAYS
+		dataType: string
+		sourceColumn: COD_PAYS
+
+	column DAT_DEB_APP_TARIF
+		dataType: dateTime
+		sourceColumn: DAT_DEB_APP_TARIF
+
+	column DAT_FIN_APP_TARIF
+		dataType: dateTime
+		sourceColumn: DAT_FIN_APP_TARIF
+
+	column PRX_PCM_HT_EUR
+		dataType: string
+		summarizeBy: none
+		sourceColumn: PRX_PCM_HT_EUR
+
+	column PRX_PMD_HT_EUR
+		dataType: string
+		summarizeBy: none
+		sourceColumn: PRX_PMD_HT_EUR
+
+	column PRX_VTE_CAT_TTC_DEV
+		dataType: string
+		summarizeBy: none
+		sourceColumn: PRX_VTE_CAT_TTC_DEV
+
+	column LIB_DEVISE_ORIGINE
+		dataType: string
+		sourceColumn: LIB_DEVISE_ORIGINE
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				  #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "D_PRX_CUG_PAYS") and [Extension] = ".gz"),
+				   #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"DAT_DEB_APP_TARIF", type date}, {"DAT_FIN_APP_TARIF", type date}})
+				in
+				    #"Changed Type"
+

@@ -1,0 +1,73 @@
+table Composant
+
+	column COD_CUG
+		dataType: string
+		isHidden
+		displayFolder: KEYS
+		sourceColumn: COD_CUG
+
+	column COD_CUG_COMPOSANT
+		dataType: string
+		summarizeBy: none
+		sourceColumn: COD_CUG_COMPOSANT
+
+	column COD_SAISON
+		dataType: string
+		isHidden
+		displayFolder: KEYS
+		sourceColumn: COD_SAISON
+
+	column COD_ARTICLE_COMPOSANT
+		dataType: string
+		summarizeBy: none
+		sourceColumn: COD_ARTICLE_COMPOSANT
+
+	column NBR_UVC
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: NBR_UVC
+
+	column NBR_PCB
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: NBR_PCB
+
+	column QTE_TCO
+		dataType: int64
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: QTE_TCO
+
+	column DAT_ARR
+		dataType: string
+		summarizeBy: none
+		sourceColumn: DAT_ARR
+
+	column COD_CUG_SAISON
+		dataType: string
+		isHidden
+		displayFolder: KEYS
+		sourceColumn: COD_CUG_SAISON
+
+	column COD_CUG_COMPOSANT_SAISON
+		dataType: string
+		isHidden
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_CUG_COMPOSANT_SAISON
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				  #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "D_CUG_COMPOSANT") and [Extension] = ".gz"),
+				   #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true])
+				in
+				    #"Promoted Headers"
+

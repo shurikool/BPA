@@ -1,0 +1,47 @@
+table Phase
+
+	column COD_PHASE
+		dataType: string
+		sourceColumn: COD_PHASE
+
+	column DAT_DEB_PHASE
+		dataType: string
+		sourceColumn: DAT_DEB_PHASE
+
+	column DAT_FIN_PHASE
+		dataType: string
+		sourceColumn: DAT_FIN_PHASE
+
+	column LIB_PHASE
+		dataType: string
+		sourceColumn: LIB_PHASE
+
+	column COD_REF_COMM
+		dataType: string
+		sourceColumn: COD_REF_COMM
+
+	column COD_REF_PHASE
+		dataType: string
+		sourceColumn: COD_REF_PHASE
+
+	column COD_SAISON
+		dataType: string
+		sourceColumn: COD_SAISON
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "TD_REF_PHASE_TYPOLOGIE") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Columns=22, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Autres colonnes supprimées" = Table.SelectColumns(#"Promoted Headers",{"COD_PHASE", "DAT_DEB_PHASE", "DAT_FIN_PHASE", "LIB_PHASE", "COD_REF_COMM", "COD_REF_PHASE", "COD_SAISON"})
+				
+				in
+				    #"Autres colonnes supprimées"
+

@@ -1,0 +1,82 @@
+/// Dimension
+table Calendrier
+	dataCategory: Time
+
+	column DAT
+		dataType: dateTime
+		isKey
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT
+
+		annotation TabularEditor_MarkAsDateKey = 1
+
+	column DAT_N1
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_N1
+
+	column LIB_AN_MOIS
+		dataType: string
+		formatString: Short Date
+		sourceColumn: LIB_AN_MOIS
+
+		annotation Format = <Format Format="DateTimeShortDatePattern" />
+
+	column LIB_AN_SEM
+		dataType: string
+		sourceColumn: LIB_AN_SEM
+
+	column LIB_JOUR
+		dataType: string
+		sourceColumn: LIB_JOUR
+		sortByColumn: NUM_JOUR
+
+	column LIB_MOIS
+		dataType: string
+		sourceColumn: LIB_MOIS
+		sortByColumn: NUM_MOIS
+
+	column NUM_AN
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: NUM_AN
+
+	column NUM_JOUR
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: NUM_JOUR
+
+	column NUM_MOIS
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: NUM_MOIS
+
+	column NUM_SEMAINE
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: NUM_SEMAINE
+
+	column AN_SEM_CALCUL = LEFT('Calendrier'[LIB_AN_SEM],4)*100 + RIGHT('Calendrier'[LIB_AN_SEM],2)
+		dataType: int64
+		summarizeBy: none
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "D_CALENDRIER") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Columns=10, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Filtered Rows" = Table.SelectRows(#"Promoted Headers", each [DAT] <> null and [DAT] <> ""),
+				    #"Filtered Rows1" = Table.SelectRows(#"Filtered Rows", each [DAT_N1] <> null and [DAT_N1] <> ""),
+				    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Filtered Rows1", {{"DAT", type date}, {"DAT_N1", type date}}, "fr-FR"),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Changed Type with Locale",{{"DAT", type date}, {"NUM_JOUR", Int64.Type}, {"NUM_SEMAINE", Int64.Type}, {"NUM_MOIS", Int64.Type}, {"NUM_AN", Int64.Type}, {"LIB_JOUR", type text}, {"LIB_MOIS", type text}, {"LIB_AN_SEM", type text}, {"LIB_AN_MOIS", type text}, {"DAT_N1", type date}}),
+				    #"Sorted Rows1" = Table.Sort(#"Changed Type",{{"DAT", Order.Ascending}})
+				in
+				    #"Sorted Rows1"
+

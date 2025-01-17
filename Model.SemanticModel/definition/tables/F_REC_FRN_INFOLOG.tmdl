@@ -1,0 +1,142 @@
+/// Fait : Réception fournisseurs
+table F_REC_FRN_INFOLOG
+	isHidden
+
+	column COD_ACTIVITE
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_ACTIVITE
+
+	column COD_CUG_SAISON
+		dataType: string
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		sourceColumn: COD_CUG_SAISON
+
+	column COD_ETA_REC_CMD_FRN
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_ETA_REC_CMD_FRN
+
+	column DAT_REC_FRN_PLANIFIE
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_REC_FRN_PLANIFIE
+
+	column DAT_REC_FRN_REEL
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_REC_FRN_REEL
+
+	column DAT_REC_FRN_THEO
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_REC_FRN_THEO
+
+		annotation Format = <Format Format="DateTimeCustom"><DateTimes><DateTime LCID="1036" Group="ShortDate" FormatString="dd/MM/yyyy" /></DateTimes></Format>
+
+	column HEU_REC_FRN_PLANIFIE
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: HEU_REC_FRN_PLANIFIE
+
+	column HEU_REC_FRN_REEL
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: HEU_REC_FRN_REEL
+
+	column NBR_PCB
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: NBR_PCB
+
+	column NBR_SPCB
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: NBR_SPCB
+
+	column NUM_CMD_FRN_INFOLOG
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: none
+		sourceColumn: NUM_CMD_FRN_INFOLOG
+
+	column NUM_LG
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: none
+		sourceColumn: NUM_LG
+
+	column NUM_SS_CMD_FRN_INFOLOG
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: none
+		sourceColumn: NUM_SS_CMD_FRN_INFOLOG
+
+	column PDS_CMD_FRN
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: none
+		sourceColumn: PDS_CMD_FRN
+
+	column QTE_CMD_FRN_REC
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_CMD_FRN_REC
+
+	column QTE_CMD_FRN_RELIQUAT
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_CMD_FRN_RELIQUAT
+
+	column TYP_CUG
+		dataType: string
+		sourceColumn: TYP_CUG
+
+	column VOL_CMD_FRN
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: none
+		sourceColumn: VOL_CMD_FRN
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "F_REC_FRN_INFO") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"NUM_CMD_FRN_INFOLOG", Int64.Type}, {"NUM_SS_CMD_FRN_INFOLOG", Int64.Type}, {"NUM_LG", Int64.Type}, {"TYP_CUG", type text}, {"NBR_PCB", Int64.Type}, {"COD_ACTIVITE", Int64.Type}, {"COD_ETA_REC_CMD_FRN", Int64.Type}, {"DAT_REC_FRN_THEO", type date}, {"DAT_REC_FRN_PLANIFIE", type date}, {"HEU_REC_FRN_PLANIFIE", type time}, {"DAT_REC_FRN_REEL", type date}, {"HEU_REC_FRN_REEL", type time}, {"QTE_CMD_FRN_REC", Int64.Type}, {"QTE_CMD_FRN_RELIQUAT", Int64.Type}, {"NBR_SPCB", Int64.Type}, {"PDS_CMD_FRN", type number}, {"VOL_CMD_FRN", type number}, {"COD_CUG_SAISON", type text}}, "fr-FR"),
+				    #"Trimmed Text" = Table.TransformColumns(#"Changed Type",{{"TYP_CUG", Text.Trim, type text}})
+				    in
+				
+				    #"Trimmed Text"
+

@@ -1,0 +1,49 @@
+table Attribut
+
+	column COD_CUG
+		dataType: string
+		isHidden
+		displayFolder: KEYS
+		sourceColumn: COD_CUG
+
+	column COD_SAISON
+		dataType: string
+		isHidden
+		displayFolder: KEYS
+		sourceColumn: COD_SAISON
+
+	column COD_REF_PRD_ATTRIBUT
+		dataType: string
+		isHidden
+		displayFolder: KEYS
+		sourceColumn: COD_REF_PRD_ATTRIBUT
+
+	column LIB_PRD_ATTRIBUT
+		dataType: string
+		sourceColumn: LIB_PRD_ATTRIBUT
+
+	column VALEUR_PRD_ATTRIBUT
+		dataType: string
+		sourceColumn: VALEUR_PRD_ATTRIBUT
+
+	column COD_CUG_SAISON
+		dataType: string
+		isHidden
+		displayFolder: KEYS
+		sourceColumn: COD_CUG_SAISON
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				  #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "V_RL_PRD_ATTRIBUT") and [Extension] = ".gz"),
+				   #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true])
+				in
+				    #"Promoted Headers"
+

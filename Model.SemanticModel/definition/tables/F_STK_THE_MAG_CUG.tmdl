@@ -1,0 +1,318 @@
+/// Fait : Photo de Stock Magasin
+table F_STK_THE_MAG_CUG
+	isHidden
+
+	column DAT_PHOTO_STK
+		dataType: dateTime
+		isHidden
+		formatString: dd/MM/yyyy
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: DAT_PHOTO_STK
+
+	column COD_MAGASIN_RMS
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_MAGASIN_RMS
+
+	column COD_REF_NOMENC
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_REF_NOMENC
+
+	column COD_REF_COMM
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_REF_COMM
+
+	column COD_CUG_COD_SAISON
+		dataType: string
+		isHidden
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_CUG_COD_SAISON
+
+	column QTE_THE_ENC_LOG
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_THE_ENC_LOG
+
+	column QTE_THE_ENC_LOG_IMP
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_THE_ENC_LOG_IMP
+
+	column QTE_THE_ENC_LOG_PROMO
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_THE_ENC_LOG_PROMO
+
+	column QTE_THE_ENC_LOG_REA
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_THE_ENC_LOG_REA
+
+	column QTE_THE_ENC_LOG_SOLDE
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_THE_ENC_LOG_SOLDE
+
+	column QTE_STK_THE_MAG_STOCK
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_STK_THE_MAG_STOCK
+
+	column QTE_THE_TRANSIT_CMDMAG
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_THE_TRANSIT_CMDMAG
+
+	column TYP_PRX_VTE
+		dataType: string
+		sourceColumn: TYP_PRX_VTE
+
+	column PRX_PCM_HT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: PRX_PCM_HT_EUR
+
+	column PRX_PMD_HT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: PRX_PMD_HT_EUR
+
+	column PRX_VTE_CAT_TTC_DEV
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: PRX_VTE_CAT_TTC_DEV
+
+	column MNT_STK_THE_MAG_PCM_HT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: MNT_STK_THE_MAG_PCM_HT_EUR
+
+	column MNT_STK_THE_MAG_PMD_HT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: MNT_STK_THE_MAG_PMD_HT_EUR
+
+	column MNT_STK_THE_MAG_VTE_CAT_TTC_DE
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: MNT_STK_THE_MAG_VTE_CAT_TTC_DE
+
+	partition '2022 Q4' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2022/Q4")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_THE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_THE_MAG_CUG)"(#"Sample File (F_STK_THE_MAG_CUG)"))),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Table Column1",{"NUM_JOUR"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"DAT_PHOTO_STK", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"QTE_THE_ENC_LOG", Int64.Type}, {"QTE_THE_ENC_LOG_IMP", Int64.Type}, {"QTE_THE_ENC_LOG_PROMO", Int64.Type}, {"QTE_THE_ENC_LOG_REA", Int64.Type}, {"QTE_THE_ENC_LOG_SOLDE", Int64.Type}, {"QTE_STK_THE_MAG_STOCK", Int64.Type}, {"QTE_THE_TRANSIT_CMDMAG", Int64.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"MNT_STK_THE_MAG_PCM_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_PMD_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_VTE_CAT_TTC_DE", Currency.Type}, {"COD_CUG_COD_SAISON", type text}})
+				in
+				    #"Changed Type"
+
+	partition '2023 Q1' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q1")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_THE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_THE_MAG_CUG)"(#"Sample File (F_STK_THE_MAG_CUG)"))),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Table Column1",{"NUM_JOUR"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"DAT_PHOTO_STK", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"QTE_THE_ENC_LOG", Int64.Type}, {"QTE_THE_ENC_LOG_IMP", Int64.Type}, {"QTE_THE_ENC_LOG_PROMO", Int64.Type}, {"QTE_THE_ENC_LOG_REA", Int64.Type}, {"QTE_THE_ENC_LOG_SOLDE", Int64.Type}, {"QTE_STK_THE_MAG_STOCK", Int64.Type}, {"QTE_THE_TRANSIT_CMDMAG", Int64.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"MNT_STK_THE_MAG_PCM_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_PMD_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_VTE_CAT_TTC_DE", Currency.Type}, {"COD_CUG_COD_SAISON", type text}})
+				in
+				    #"Changed Type"
+
+	partition '2023 Q2' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q2")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_THE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_THE_MAG_CUG)"(#"Sample File (F_STK_THE_MAG_CUG)"))),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Table Column1",{"NUM_JOUR"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"DAT_PHOTO_STK", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"QTE_THE_ENC_LOG", Int64.Type}, {"QTE_THE_ENC_LOG_IMP", Int64.Type}, {"QTE_THE_ENC_LOG_PROMO", Int64.Type}, {"QTE_THE_ENC_LOG_REA", Int64.Type}, {"QTE_THE_ENC_LOG_SOLDE", Int64.Type}, {"QTE_STK_THE_MAG_STOCK", Int64.Type}, {"QTE_THE_TRANSIT_CMDMAG", Int64.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"MNT_STK_THE_MAG_PCM_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_PMD_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_VTE_CAT_TTC_DE", Currency.Type}, {"COD_CUG_COD_SAISON", type text}})
+				in
+				    #"Changed Type"
+
+	partition '2023 Q3' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q3")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_THE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_THE_MAG_CUG)"(#"Sample File (F_STK_THE_MAG_CUG)"))),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Table Column1",{"NUM_JOUR"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"DAT_PHOTO_STK", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"QTE_THE_ENC_LOG", Int64.Type}, {"QTE_THE_ENC_LOG_IMP", Int64.Type}, {"QTE_THE_ENC_LOG_PROMO", Int64.Type}, {"QTE_THE_ENC_LOG_REA", Int64.Type}, {"QTE_THE_ENC_LOG_SOLDE", Int64.Type}, {"QTE_STK_THE_MAG_STOCK", Int64.Type}, {"QTE_THE_TRANSIT_CMDMAG", Int64.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"MNT_STK_THE_MAG_PCM_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_PMD_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_VTE_CAT_TTC_DE", Currency.Type}, {"COD_CUG_COD_SAISON", type text}})
+				in
+				    #"Changed Type"
+
+	partition '2023 Q4' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q4")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_THE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_THE_MAG_CUG)"(#"Sample File (F_STK_THE_MAG_CUG)"))),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Table Column1",{"NUM_JOUR"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"DAT_PHOTO_STK", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"QTE_THE_ENC_LOG", Int64.Type}, {"QTE_THE_ENC_LOG_IMP", Int64.Type}, {"QTE_THE_ENC_LOG_PROMO", Int64.Type}, {"QTE_THE_ENC_LOG_REA", Int64.Type}, {"QTE_THE_ENC_LOG_SOLDE", Int64.Type}, {"QTE_STK_THE_MAG_STOCK", Int64.Type}, {"QTE_THE_TRANSIT_CMDMAG", Int64.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"MNT_STK_THE_MAG_PCM_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_PMD_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_VTE_CAT_TTC_DE", Currency.Type}, {"COD_CUG_COD_SAISON", type text}})
+				in
+				    #"Changed Type"
+
+	partition '2024 Q1' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q1")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_THE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_THE_MAG_CUG)"(#"Sample File (F_STK_THE_MAG_CUG)"))),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Table Column1",{"NUM_JOUR"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"DAT_PHOTO_STK", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"QTE_THE_ENC_LOG", Int64.Type}, {"QTE_THE_ENC_LOG_IMP", Int64.Type}, {"QTE_THE_ENC_LOG_PROMO", Int64.Type}, {"QTE_THE_ENC_LOG_REA", Int64.Type}, {"QTE_THE_ENC_LOG_SOLDE", Int64.Type}, {"QTE_STK_THE_MAG_STOCK", Int64.Type}, {"QTE_THE_TRANSIT_CMDMAG", Int64.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"MNT_STK_THE_MAG_PCM_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_PMD_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_VTE_CAT_TTC_DE", Currency.Type}, {"COD_CUG_COD_SAISON", type text}})
+				in
+				    #"Changed Type"
+
+	partition '2024 Q2' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q2")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_THE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_THE_MAG_CUG)"(#"Sample File (F_STK_THE_MAG_CUG)"))),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Table Column1",{"NUM_JOUR"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"DAT_PHOTO_STK", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"QTE_THE_ENC_LOG", Int64.Type}, {"QTE_THE_ENC_LOG_IMP", Int64.Type}, {"QTE_THE_ENC_LOG_PROMO", Int64.Type}, {"QTE_THE_ENC_LOG_REA", Int64.Type}, {"QTE_THE_ENC_LOG_SOLDE", Int64.Type}, {"QTE_STK_THE_MAG_STOCK", Int64.Type}, {"QTE_THE_TRANSIT_CMDMAG", Int64.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"MNT_STK_THE_MAG_PCM_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_PMD_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_VTE_CAT_TTC_DE", Currency.Type}, {"COD_CUG_COD_SAISON", type text}})
+				in
+				    #"Changed Type"
+
+	partition '2024 Q3' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q3")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_THE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_THE_MAG_CUG)"(#"Sample File (F_STK_THE_MAG_CUG)"))),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Table Column1",{"NUM_JOUR"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"DAT_PHOTO_STK", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"QTE_THE_ENC_LOG", Int64.Type}, {"QTE_THE_ENC_LOG_IMP", Int64.Type}, {"QTE_THE_ENC_LOG_PROMO", Int64.Type}, {"QTE_THE_ENC_LOG_REA", Int64.Type}, {"QTE_THE_ENC_LOG_SOLDE", Int64.Type}, {"QTE_STK_THE_MAG_STOCK", Int64.Type}, {"QTE_THE_TRANSIT_CMDMAG", Int64.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"MNT_STK_THE_MAG_PCM_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_PMD_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_VTE_CAT_TTC_DE", Currency.Type}, {"COD_CUG_COD_SAISON", type text}})
+				in
+				    #"Changed Type"
+
+	partition '2024 Q4' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q4")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_THE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_THE_MAG_CUG)"(#"Sample File (F_STK_THE_MAG_CUG)"))),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Table Column1",{"NUM_JOUR"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"DAT_PHOTO_STK", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"QTE_THE_ENC_LOG", Int64.Type}, {"QTE_THE_ENC_LOG_IMP", Int64.Type}, {"QTE_THE_ENC_LOG_PROMO", Int64.Type}, {"QTE_THE_ENC_LOG_REA", Int64.Type}, {"QTE_THE_ENC_LOG_SOLDE", Int64.Type}, {"QTE_STK_THE_MAG_STOCK", Int64.Type}, {"QTE_THE_TRANSIT_CMDMAG", Int64.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"MNT_STK_THE_MAG_PCM_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_PMD_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_VTE_CAT_TTC_DE", Currency.Type}, {"COD_CUG_COD_SAISON", type text}})
+				in
+				    #"Changed Type"
+
+	partition '2025 Q1' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_STK_THE_MAG_CUG") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2025/Q1")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_STK_THE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_STK_THE_MAG_CUG)"(#"Sample File (F_STK_THE_MAG_CUG)"))),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Table Column1",{"NUM_JOUR"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"DAT_PHOTO_STK", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_REF_NOMENC", Int64.Type}, {"COD_REF_COMM", Int64.Type}, {"QTE_THE_ENC_LOG", Int64.Type}, {"QTE_THE_ENC_LOG_IMP", Int64.Type}, {"QTE_THE_ENC_LOG_PROMO", Int64.Type}, {"QTE_THE_ENC_LOG_REA", Int64.Type}, {"QTE_THE_ENC_LOG_SOLDE", Int64.Type}, {"QTE_STK_THE_MAG_STOCK", Int64.Type}, {"QTE_THE_TRANSIT_CMDMAG", Int64.Type}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", Currency.Type}, {"PRX_PMD_HT_EUR", Currency.Type}, {"PRX_VTE_CAT_TTC_DEV", Currency.Type}, {"MNT_STK_THE_MAG_PCM_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_PMD_HT_EUR", Currency.Type}, {"MNT_STK_THE_MAG_VTE_CAT_TTC_DE", Currency.Type}, {"COD_CUG_COD_SAISON", type text}})
+				in
+				    #"Changed Type"
+

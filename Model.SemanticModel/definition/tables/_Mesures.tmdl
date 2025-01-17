@@ -1,0 +1,2881 @@
+table _Mesures
+
+	/// Nombre de photos de stock disponible
+	measure 'Nb Photos stock' = DISTINCTCOUNT ( 'F_STK_THE_MAG_CUG'[DAT_PHOTO_STK] )
+		formatString: #,##0
+		displayFolder: Controle Data
+
+	/// Somme du chiffre d'affaire
+	measure 'CA TTC Vte' = ```
+			 sum(F_VTE_MAG_CUG[MNT_CA_NET_TTC_EUR])
+			```
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Montant stock entrepot prix de vente Catalogue
+	measure 'Mt Stk Ent Px VTE TTC Jour' = SUM ( F_STK_ENT_CUG[MNT_STK_ENT_VTE_CAT_TTC_EUR] )
+		formatString: #,##0 €
+		displayFolder: Montant
+
+	/// Montant stock entrepot PCM HT (Stk Ent)
+	measure 'Mt Stk Ent PCM HT' = ```
+			sum(F_STK_ENT_CUG[MNT_STK_ENT_PCM_HT_EUR])
+			
+			```
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// Montant stock entrepot PMD HT
+	measure 'Mt Stk Ent PMD HT Jour' = sum(F_STK_ENT_CUG[MNT_STK_ENT_PMD_HT_EUR])
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// compte distint de cod_magasin
+	measure 'Nb Mag Vendeurs TOTAL' =
+			VAR v_1 =
+			    SUMMARIZE (
+			       'F_VTE_MAG_CUG',
+			        'Magasin'[COD_MAGASIN_TXT],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			    )
+			var v_2 = addcolumns (v_1 , "QTE_VTE@", [Qte Vte])
+			
+			var v_3 = addcolumns (v_2, "checkrule@", if( [QTE_VTE@] > 0 , 1 , 0))
+			
+			RETURN
+			        sumx ( v_3, [checkrule@] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// Montant de Vente catalogue TTC
+	measure 'Mt Px Vte Catalogue TTC' = SUM ( F_VTE_MAG_CUG[MNT_VTE_CAT_TTC_EUR] )
+		formatString: " #,##0.00 €"
+		displayFolder: Montant
+
+	/// [CA HT Vte] - [Mt PCM HT]
+	measure 'Mt Marge Vte' = [CA HT Vte] - [Mt PCM HT]
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// Qte Stk Ent Info Log / NB PCB si le NB PCB est different de 0
+	measure 'Nb Colis Stk Ent Jour' =
+			VAR v_1 =
+			    SUMMARIZE ( F_STK_ENT_CUG, 'Nomenclature Produit'[COD_CUG] )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "Colis@",
+			            VAR t_1 =
+			                SUM ( F_STK_ENT_CUG[QTE_STK_ENT_INFO_LOG] )
+			            VAR t_2 =
+			                SUM ( F_STK_ENT_CUG[NBR_PCB] )
+			            RETURN
+			                IF ( MAX ( F_STK_ENT_CUG[NBR_PCB] ) <> 0, DIVIDE ( t_1, t_2 ), 0 )
+			    )
+			RETURN
+			    SUMX ( v_2, [Colis@] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// Qte Stk Ent Dispo Adm / Nbr PCB si NBR PCB est different de 0 
+	measure 'Nb Colis Dispo Stk Ent Jour' =
+			
+			VAR v_1 =
+			    SUMMARIZE ( F_STK_ENT_CUG, 'Nomenclature Produit'[COD_CUG] )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "Colis@",
+			            VAR t_1 =
+			                SUM ( F_STK_ENT_CUG[QTE_STK_ENT_DISPO_ADM] )
+			            VAR t_2 =
+			                SUM ( F_STK_ENT_CUG[NBR_PCB] )
+			            RETURN
+			                IF ( MAX ( F_STK_ENT_CUG[NBR_PCB] ) <> 0, DIVIDE ( t_1, t_2 ), 0 )
+			    )
+			RETURN
+			    SUMX ( v_2, [Colis@] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// [Mt Stk Ent PMD HT Jour] / [Qte Stk Ent UVC InfoLog]
+	measure 'PMD Stk moyen' = DIVIDE ( [Mt Stk Ent PMD HT Jour], [Qte Stk Ent UVC InfoLog] )
+		formatString: #,##0
+		displayFolder: A Classer
+
+	/// [Mt Stk Ent PCM HT] /  [Qte Stk Ent UVC InfoLog]
+	measure 'PCM Stk moyen' = DIVIDE ( [Mt Stk Ent PCM HT], [Qte Stk Ent UVC InfoLog] )
+		formatString: #,##0
+		displayFolder: A Classer
+
+	///  [Mt Stk Ent Px VTE TTC Jour] / [Qte Stk Ent UVC InfoLog] 
+	measure 'PVM Stk Ent' = DIVIDE ( [Mt Stk Ent Px VTE TTC Jour], [Qte Stk Ent UVC InfoLog] )
+		formatString: #,##0
+		displayFolder: PVM
+
+	/// division de la quantité stock entrepot UVC jour et du nombre de colis stock entrepot jour, lorsque le type cug est CM et que le nombre de colis est different de zero
+	measure 'Nb UVC Par CM' =
+			IF (
+			    AND ( MAX ( 'Nomenclature Produit'[TYP_CUG] ) = "CM", [Nb Colis Stk Ent Jour] <> 0 ),
+			    DIVIDE ( [Qte Stk Ent UVC InfoLog], [Nb Colis Stk Ent Jour] ),
+			    0
+			)
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// Si la quantité stock magasin est superieure à 0 
+	measure 'Nb RCT Livré Sans Stk Ent' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Magasin'[COD_PAYS],
+			        'Nomenclature Produit'[COD_RCT_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "Qte_Stk_Theo_Mag_Stock@", [Qte Stk Theo Mag Stock],
+			        "Qte_Stk_Ent_Dispo_UVC_RMS@", [Qte Stk Ent Dispo UVC RMS]
+			    )
+			RETURN
+			    COUNTX (
+			        FILTER (
+			            v_2,
+			            [Qte_Stk_Theo_Mag_Stock@] > 0
+			                && [Qte_Stk_Ent_Dispo_UVC_RMS@] <= 0
+			        ),
+			        [COD_RCT_TXT]
+			    )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb RCT Livré' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Nomenclature'[COD_REF_NOMENC],
+			        'Magasin'[COD_MAGASIN_RMS],
+			        'Saison Histoire Typo'[COD_REF_COMM],
+			        'Nomenclature Produit'[COD_RCT_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS ( v_1, "Qte@", [Qte Besoin Reappro] + [Qte Stk Theo EnCours Cmd Mag] + [Qte Stk Theo Mag Stock] )
+			RETURN
+			    COUNTX ( FILTER ( v_2, [Qte@] > 0 ), [COD_RCT_TXT] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Taux Rupture Entrepot Pays' = DIVIDE ( [Nb RCT Livré], [Nb RCT Livré Sans Stk Ent] )
+		formatString: #,##0 %
+		displayFolder: Taux
+
+	/// if([Qte Besoin Reappro] + [Qte Stk Theo EnCours Cmd Mag] + [Qte Stk Theo Mag Stock] > 0 , 1 ,0)
+	measure RECU =
+			VAR v_1 = [Qte Besoin Reappro] + [Qte Stk Theo EnCours Cmd Mag] + [Qte Stk Theo Mag Stock]
+			RETURN
+			    IF ( v_1 > 0, 1, 0 )
+		formatString: #,##0
+		displayFolder: A Classer
+
+	///  
+	measure 'Rupture Achat' = ```
+			VAR v_1 = [Qte Besoin Reappro] +[Qte Vte] + [Qte Stk Theo EnCours Cmd Mag] + [Qte Stk Theo Mag Stock]
+			RETURN
+			    IF (
+			        AND (
+			            AND ( v_1 > 0, [Qte Stk Theo Mag Stock] <= 0 ),
+			            [Qte Stk Ent Dispo UVC RMS] <= 0
+			        ),
+			        1,
+			        0
+			    )
+			
+			```
+		formatString: #,##0
+		displayFolder: Rupture
+
+	measure 'Rupture Appro' = ```
+			VAR v_1 = [Qte Besoin Reappro] +[Qte Vte]+ [Qte Stk Theo EnCours Cmd Mag] + [Qte Stk Theo Mag Stock]
+			RETURN
+			    IF (
+			        AND (
+			            AND ( v_1 > 0, [Qte Stk Theo Mag Stock] <= 0 ),
+			            [Qte Stk Ent Dispo UVC RMS] > 0
+			        ),
+			        1,
+			        0
+			    )
+			
+			```
+		formatString: #,##0
+		displayFolder: Rupture
+
+	measure 'Rupture Mag' = ```
+			VAR v_1 = [Qte Besoin Reappro] + [Qte Vte]+ [Qte Stk Theo EnCours Cmd Mag] + [Qte Stk Theo Mag Stock]
+			RETURN
+			    IF ( AND ( v_1 > 0, [Qte Stk Theo Mag Stock] <= 0 ), 1, 0 )
+			
+			```
+		formatString: #,##0
+		displayFolder: Rupture
+
+	/// [Qte Besoin Reappro] + [Qte Stk Theo EnCours Cmd Mag] + [Qte Stk Theo Mag Stock]
+	measure Total_LIV =
+			VAR v_1 = [Qte Besoin Reappro] + [Qte Stk Theo EnCours Cmd Mag] + [Qte Stk Theo Mag Stock]
+			RETURN
+			    IF ( v_1 = 0, 0, v_1 )
+		formatString: #,##0
+		displayFolder: A Classer
+
+	/// ([Qte Vte] - [Qte Vte n-1]) / [Qte Vte n-1]
+	measure 'Evol Qte Vte N/N-1' = VAR v_1 = [Qte Vte] - [Qte Vte n-1] RETURN DIVIDE ( v_1, [Qte Vte n-1] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Qte Stk Ent UVC InfoLog] - [Qte Stk Ent UVC InfoLog n-1]) / [Qte Stk Ent UVC InfoLog n-1]
+	measure 'Evol Qte Stk Ent UVC InfoLog' =
+			VAR v_1 = [Qte Stk Ent UVC InfoLog] - [Qte Stk Ent UVC InfoLog n-1]
+			RETURN
+			    DIVIDE ( v_1, [Qte Stk Ent UVC InfoLog n-1] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// Compte du nombre RC uniquement ceux qui ont une quantité stock magasin superieure à zero
+	measure 'Nb RC Avec Stk Mag' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Nomenclature Produit'[COD_RC_TXT],
+			        "QTE_STK_THE_MAG_STOCK@", SUM ( F_STK_THE_MAG_CUG[QTE_STK_THE_MAG_STOCK] )
+			    )
+			RETURN
+			    COUNTX ( FILTER ( v_1, [QTE_STK_THE_MAG_STOCK@] > 0 ), [COD_RC_TXT] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// Compte du nombre RC uniquement ceux qui ont une quantité stock magasin superieure à zero  et une quantité de vente superieure à zero
+	measure 'Nb RC Vendues et avec Stk Mag' =
+			
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Nomenclature Produit'[COD_RC_TXT],
+			        "QTE_STK_THE_MAG_STOCK@", SUM ( F_STK_THE_MAG_CUG[QTE_STK_THE_MAG_STOCK] ),
+			        "QTE_VTE@", SUM ( F_VTE_MAG_CUG[QTE_VTE] )
+			    )
+			RETURN
+			    COUNTX ( FILTER ( v_1, [QTE_STK_THE_MAG_STOCK@] > 0 && [QTE_VTE@] > 0  ), [COD_RC_TXT] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// if ( [Nb RC Vendues et avec Stk Mag] /  [Nb RC Avec Stk Mag] > 0 , faire le calcul , "Pas de stock")
+	measure 'Taux de mise en vente' =
+			VAR v_1 =
+			    DIVIDE ( [Nb RC vendues TOUS PAYS],[Nb RC Livrées Mag] )
+			RETURN
+			    IF ( v_1 > 0, v_1, "PAS DE STOCK" )
+		formatString: #,##0 %
+		displayFolder: Taux
+
+	measure 'Var Zone' =
+			IF (
+			    MAX ( 'Magasin'[LIB_PAYS] )
+			        IN { "PORTUGAL", "LUXEMBOURG", "ESPAGNE", "FRANCE" },
+			    "Zone 1",
+			    "zone 2"
+			)
+		displayFolder: A Classer
+
+	/// Qte Vte / Nb Mag Vendeurs Total
+	measure '_adefinir 2' = DIVIDE ( [Qte Vte], [Nb Mag Vendeurs TOTAL] )
+		displayFolder: A Classer
+
+	/// [Qte Stk Theo Mag Stock] / ([Qte Vte] / 7)
+	measure 'Rot (jr)' =
+			VAR v_1 = [Qte Stk Theo Mag Stock]
+			VAR v_2 =
+			    DIVIDE ( [Qte Vte], 7 )
+			RETURN
+			    DIVIDE ( v_1, v_2 )
+		formatString: #,##0
+		displayFolder: A Classer
+
+	/// Somme du chiffre d'affaire de l'année N-1 de l'année filtrée 
+	measure 'CA TTC Vte N-1' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA TTC Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [CA TTC Vte], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// ([Qte Besoin Reappro] - [Qte Besoin Reappro J-7]) / [Qte Besoin Reappro J-7]
+	measure 'Evol Qte Besoin reappro J-7' =
+			var v_1 = [Qte Besoin Reappro] - [Qte Besoin Reappro J-7]
+			
+			return divide (v_1,[Qte Besoin Reappro J-7])
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// [Qte Stk Theo Mag Stock] / [Qte Vte] 
+	measure 'Rotation Mag' = DIVIDE ( [Qte Stk Theo Mag Stock], [Qte Vte] )
+		formatString: #,##0.0
+		displayFolder: A Classer
+
+	/// Qte besoin reappro / qte vte
+	measure '% reappro' = [Qte Besoin Reappro] / [Qte Vte]
+		formatString: #,##0.0 %
+		displayFolder: A Classer
+
+	measure '% reappro N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [% reappro],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [% reappro], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0.0 %
+		displayFolder: A Classer
+
+	/// ([CA TTC Vte] -[CA TTC Vte N-1]) / [CA TTC Vte N-1]
+	measure 'Evol CA TTC Vte N/N-1' = VAR v_1 = divide([CA TTC Vte] , [CA TTC Vte N-1] ) RETURN  v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// Somme du chiffre d'affaire de l'année N-2 de l'année filtrée 
+	measure 'CA TTC Vte N-2' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA TTC Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [CA TTC Vte], DATEADD ( 'Calendrier'[DAT], -2, YEAR ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire de l'année N-3 de l'année filtrée 
+	measure 'CA TTC Vte N-3' =
+			
+			
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA TTC Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			       CALCULATE ( [CA TTC Vte], DATEADD ( 'Calendrier'[DAT], -3, YEAR ) )
+			
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	measure 'Evol CA TTC Vte N/N-2' = VAR v_1 = DIVIDE ( [CA TTC Vte], [CA TTC Vte N-2] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	measure 'Evol CA TTC Vte N/N-3' = VAR v_1 = DIVIDE ( [CA TTC Vte], [CA TTC Vte N-3] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// Somme du chiffre d'affaire
+	measure 'CA HT Vte' = ```
+			 sum(F_VTE_MAG_CUG[MNT_CA_NET_HT_EUR])
+			```
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire
+	measure 'CA HT Vte N-1' =
+			
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA HT Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			       CALCULATE ( [CA HT Vte], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire de l'année N-2 de l'année filtrée 
+	measure 'CA HT Vte N-2' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA HT Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			       CALCULATE ( [CA HT Vte], DATEADD ( 'Calendrier'[DAT], -2, YEAR ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire de l'année N-3 de l'année filtrée 
+	measure 'CA HT Vte N-3' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA HT Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			      CALCULATE ( [CA HT Vte], DATEADD ( 'Calendrier'[DAT], -3, YEAR ) )
+			
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// ( [CA HT Vte] - [CA HT Vte N-1]) / [CA HT Vte N-1] 
+	measure 'Evol CA HT Vte N/N-1' = VAR v_1 = divide([CA HT Vte] , [CA HT Vte N-1] ) RETURN  v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	measure 'Evol CA HT Vte N/N-2' = VAR v_1 = DIVIDE ( [CA HT Vte], [CA HT Vte N-2] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	measure 'Evol CA HT Vte N/N-3' = VAR v_1 = divide([CA HT Vte] , [CA HT Vte N-3] ) RETURN  v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// 1-(CA - MT Px Vte Catalogue TTC Vte)
+	measure 'Taux de DMK N' = VAR v_1 = DIVIDE ( [CA TTC Vte], [Mt Px Vte Catalogue TTC] ) RETURN 1 - ( v_1 )
+		formatString: #,##0.0 %
+		displayFolder: Taux
+
+	/// Montant de Vente catalogue TTC N-1
+	measure 'Mt Px Vte Catalogue TTC N-1' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			  [Mt Px Vte Catalogue TTC],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE (   [Mt Px Vte Catalogue TTC], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0.00 €"
+		displayFolder: Montant
+
+	/// 1-(CA - MT Px Vte Catalogue TTC Vte)
+	measure 'Taux de DMK N-1' =
+			VAR v_1 =
+			    DIVIDE ( [CA TTC Vte N-1], [Mt Px Vte Catalogue TTC N-1] )
+			RETURN
+			    1 - ( v_1 )
+		formatString: #,##0.0 %
+		displayFolder: Taux
+
+	/// [Taux de DMK N] - [Taux de DMK N-1] 
+	measure 'Evol DMK' = ```
+			[Taux de DMK N] - [Taux de DMK N-1] 
+			```
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// Mt Marge Vte / Ca TTC
+	measure 'Taux de Marge' = DIVIDE ( [Mt Marge Vte], [CA TTC Vte])
+		formatString: #,##0.0 %
+		displayFolder: Taux
+
+	/// Mt Marge Vte / Ca TTC
+	measure 'Taux de Marge N-1' = DIVIDE ( [Mt Marge Vte N-1], [CA TTC Vte N-1] )
+		formatString: #,##0.0 %
+		displayFolder: Taux
+
+	/// [CA HT Vte N-1] - [Mt PCM HT N-1]
+	measure 'Mt Marge Vte N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Mt Marge Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Mt Marge Vte], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// Montant stock entrepot PCM HT
+	measure 'Mt Stk Ent PCM HT N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Mt Stk Ent PCM HT],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Mt Stk Ent PCM HT], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// ( [Taux de Marge] - [Taux de Marge N-1] ) * 100
+	measure 'Evol Taux De Marge N/N-1' = ( [Taux de Marge] - [Taux de Marge N-1] ) * 100
+		formatString: #,##0.0
+		displayFolder: Evolution
+
+	/// ([Qte Stk Theo Mag Stock] /  [Qte Stk Theo Mag Stock N-1]) -1 
+	measure 'Evol Qte Stk Theo Mag Stock' =
+			VAR v_1 =
+			    DIVIDE ( [Qte Stk Theo Mag Stock], [Qte Stk Theo Mag Stock N-1] )
+			RETURN
+			    v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// montant stock entrepot prix vente sur  la quantité stock entrepot UVC jour
+	measure 'PVM Stk Ent N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [PVM Stk Ent],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [PVM Stk Ent], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0
+		displayFolder: PVM
+
+	/// ( [PVM Stk Ent] - [PVM Stk Ent N-1] )  / [PVM Stk Ent N-1]
+	measure 'Evol PVM Stk Ent' =
+			VAR v_1 = [PVM Stk Ent] - [PVM Stk Ent N-1]
+			RETURN
+			    DIVIDE ( v_1, [PVM Stk Ent N-1] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// montant stock entrepot prix vente sur  la quantité stock entrepot UVC jour
+	measure 'PVM Stk Ent N-2' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [PVM Stk Ent],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [PVM Stk Ent], DATEADD ( 'Calendrier'[DAT], -2, YEAR ) )
+			    )
+		formatString: #,##0
+		displayFolder: PVM
+
+	/// Evolution de la quantité vente comparée à l'année N-1
+	measure 'Evol PVM Stk Ent N-1' =
+			VAR v_1 = [PVM Stk Ent N-1] - [PVM Stk Ent N-2]
+			RETURN
+			    DIVIDE ( v_1, [PVM Stk Ent N-2] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Qte Stk Ent Dispo UVC RMS]- [Qte Stk Ent Dispo UVC RMS N-1]) / [Qte Stk Ent Dispo UVC RMS N-1]
+	measure 'Evol Qte Stk Ent Dispo UVC RMS' =
+			VAR v_1 = [Qte Stk Ent Dispo UVC RMS]- [Qte Stk Ent Dispo UVC RMS N-1]
+			RETURN
+			    DIVIDE ( v_1, [Qte Stk Ent Dispo UVC RMS N-1] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Qte Stk Ent Dispo UVC Vision TCO RMS] - [Qte Stk Ent Dispo UVC Vision TCO RMS N-1] ) / [Qte Stk Ent Dispo UVC Vision TCO RMS N-1]  
+	measure 'Evol Qte Stk Ent Dispo UVC Vision TCO RMS' =
+			VAR v_1 = [Qte Stk Ent Dispo UVC Vision TCO RMS] - [Qte Stk Ent Dispo UVC Vision TCO RMS N-1]
+			RETURN
+			    DIVIDE ( v_1,  [Qte Stk Ent Dispo UVC Vision TCO RMS N-1] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Qte Stk Theo EnCours Cmd Mag] - [Qte Stk Theo Encours Cmd Mag N-1]) / [Qte Stk Theo Encours Cmd Mag N-1] 
+	measure 'Evol Qte Stk Theo EnCours Cmd Mag' =
+			VAR v_1 = [Qte Stk Theo EnCours Cmd Mag] - [Qte Stk Theo Encours Cmd Mag N-1]
+			RETURN
+			    DIVIDE ( v_1, [Qte Stk Theo Encours Cmd Mag N-1] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Qte Stk Mag (YC Encours)] - [Qte Stk Mag (YC Encours) N-1] ) / [Qte Stk Mag (YC Encours) N-1]
+	measure 'Evol Qte Stk Mag (YC Encours)' =
+			VAR v_1 = [Qte Stk Mag (YC Encours)] - [Qte Stk Mag (YC Encours) N-1]
+			RETURN
+			    DIVIDE ( v_1, [Qte Stk Mag (YC Encours) N-1])
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// Montant stock entrepot PCM HT
+	measure 'Mt PCM HT' = sum('F_VTE_MAG_CUG'[MNT_PCM_HT_EUR])
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// Montant stock entrepot PCM HT
+	measure 'Mt PMD HT' = sum('F_VTE_MAG_CUG'[MNT_PMD_HT_EUR])
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// Prx PCM HT / Qte vte
+	measure 'Prx PMD HT' = ```
+			max('F_VTE_MAG_CUG'[PRX_PMD_HT_EUR])
+			
+			```
+		formatString: #,##0.00
+		displayFolder: Montant
+
+	/// Pxr PCM HT / Qte vte 
+	measure 'Prx PCM HT' = ```
+			max( 'F_VTE_MAG_CUG'[PRX_PCM_HT_EUR] )
+			
+			```
+		formatString: #,##0.00
+		displayFolder: Montant
+
+	/// [CA TTC Vte] / [Qte Vte]
+	measure 'PV Caisse' = ```
+			var v_1 = [CA TTC Vte]
+			Var v_2 = [Qte Vte]
+			return 
+			divide(v_1,v_2)
+			```
+		displayFolder: PV Caisse
+
+	measure 'PV Caisse N-1' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [PV Caisse],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [PV Caisse], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		displayFolder: PV Caisse
+
+	measure 'PV Caisse N-2' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			           [PV Caisse],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			       CALCULATE ( [PV Caisse], DATEADD ( 'Calendrier'[DAT], -2, YEAR ) )
+			    )
+		displayFolder: PV Caisse
+
+	/// ([PV Caisse] - [PV Caisse N-1]) / [PV Caisse N-1]
+	measure 'Evol PV Caisse N/N-1' = VAR v_1 = [PV Caisse] - [PV Caisse N-1] RETURN DIVIDE ( v_1, [PV Caisse N-1] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	measure 'Evol PV Caisse N/N-2' = VAR v_1 = [PV Caisse] - [PV Caisse N-2] RETURN DIVIDE ( v_1, [PV Caisse N-2] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// Montant stock entrepot PCM HT
+	measure 'Mt PCM HT N-1' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			           [Mt PCM HT],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Mt PCM HT],  SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// sum('F_VTE_MAG_CUG'[MNT_VTE_CAT_TTC_EUR]) / [Qte Vte]
+	measure 'Prx Vte CAT TTC' = DIVIDE ( [Mt Px Vte Catalogue TTC], [Qte Vte] )
+		formatString: #,##0.00
+		displayFolder: Montant
+
+	measure 'Prx Vte CAT TTC Fr' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Magasin'[LIB_PAYS],
+			        'Nomenclature'[LIB_RAYON],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "Data@",
+			            IF (
+			                CALCULATE ( [Prx Vte CAT TTC], Magasin[LIB_PAYS] = "FRANCE" ) = 0
+			                    || ISBLANK ( CALCULATE ( [Prx Vte CAT TTC], Magasin[LIB_PAYS] = "FRANCE" ) ),
+			                [Prx Vte CAT TTC],
+			                CALCULATE ( [Prx Vte CAT TTC], Magasin[LIB_PAYS] = "FRANCE" )
+			            )
+			    )
+			RETURN
+			    MAXX ( v_2, [Data@] )
+		formatString: #,##0.00
+		displayFolder: Montant
+
+	/// 1 - ([Mt Px Vte Catalogue TTC] / [Mt Px Vte Catalogue TTC Fr]) 
+	measure 'Degrade N' =
+			VAR v_1 =
+			    IF (
+			        ISBLANK ( [Mt Px Vte Catalogue TTC] ) || ISBLANK ( [Mt Px Vte Catalogue TTC] ),
+			        1,
+			        0
+			    )
+			VAR v_2 =
+			    IF (
+			        ISBLANK ( [Mt Px Vte Catalogue TTC Fr] )
+			            || [Mt Px Vte Catalogue TTC Fr] = 0,
+			        [Mt Px Vte Catalogue TTC],
+			        [Mt Px Vte Catalogue TTC Fr]
+			    )
+			VAR v_3 =
+			    DIVIDE ( [Mt Px Vte Catalogue TTC], v_2 )
+			RETURN
+			    IF ( v_1 = 1, 0 , 1 - v_3 )
+		formatString: #,##0.0 %
+		displayFolder: Montant
+
+	/// [CA TTC Vte] - [CA TTC Vte N-1]
+	measure 'Ecart val CA TTC N / N-1' = [CA TTC Vte] - [CA TTC Vte N-1]
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Montant de Vente catalogue TTC
+	measure 'Degrade N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Degrade N],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Degrade N], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0.0 %
+		displayFolder: Montant
+
+	/// ( [Taux de Marge] - [Taux de Marge N-1] ) * 100
+	measure 'Evol Dégrad' = ( [Degrade N] - [Degrade N-1] ) * 100
+		formatString: #,##0.0
+		displayFolder: Evolution
+
+	/// ([Mt Marge Vte]- [Mt Marge Vte N-1])-1
+	measure 'Evol Marge Vte N/N-1' = VAR v_1 = DIVIDE ( [Mt Marge Vte], [Mt Marge Vte N-1] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	measure 'Nb RC vendues TOUS PAYS' = ```
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Nomenclature Produit'[COD_RC_TXT]
+			       )
+			var v_2 = Addcolumns(v_1,    "QTE_VTE@",[Qte Vte]  )
+			    
+			RETURN
+			    COUNTX ( FILTER ( v_2, [QTE_VTE@] > 0 ), [COD_RC_TXT] )
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb Ref Vendues' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Nomenclature Produit'[COD_REF_TXT],
+			        "QTE_VTE@", SUM ( F_VTE_MAG_CUG[QTE_VTE] )
+			    )
+			RETURN
+			    COUNTX ( FILTER ( v_1, [QTE_VTE@] > 0 ), [COD_REF_TXT] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb Ref Vendues N-1' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			          [Nb Ref Vendues],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Nb Ref Vendues], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb RC Vendues N-1 TOUS PAYS' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			           [Nb RC vendues TOUS PAYS],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Nb RC vendues TOUS PAYS], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// ([Nb RC Vendues] / [Nb RC Vendues N-1] ) - 1
+	measure 'Evol Nb RC Vendues TOUS PAYS' = VAR v_1 = DIVIDE ( [Nb RC vendues TOUS PAYS], [Nb RC Vendues N-1 TOUS PAYS] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Nb Ref Vendues]/ [Nb Ref Vendues N-1]) - 1
+	measure 'Evol Nb Ref Vendues' = VAR v_1 = DIVIDE ( [Nb Ref Vendues], [Nb Ref Vendues N-1] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// [CA TTC Vte] / [Nb RC Vendues]
+	measure 'CA TTC / Ref co' = DIVIDE ( [CA TTC Vte], [Nb RC vendues TOUS PAYS] )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// [Mt Marge Vte] / [Nb RC Vendues]
+	measure 'Mt Marge Vte / Ref co' = DIVIDE ( [Mt Marge Vte], [Nb RC vendues TOUS PAYS] )
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// [Qte Cmd Frn UVC] - [Qte Reception Cmd Frn UVC]
+	measure 'Reste à recevoir' = [Qte Cmd Frn UVC] - [Qte Reception Cmd Frn UVC]
+		formatString: #,##0.0
+		displayFolder: A Classer
+
+	/// [Qte Vte]  / ([Qte Vte] + [Qte Stk Mag (YC Encours)])
+	measure 'Ecoul Mag' =
+			VAR v_1 = [Qte Vte] + [Qte Stk Mag (YC Encours)]
+			RETURN
+			    DIVIDE ( [Qte Vte], v_1 )
+		formatString: #,##0 %
+		displayFolder: Ecoulement
+
+	/// [Qte Vte] / ([Qte Vte] + [Qte Stk Mag (YC Encours)] + [Qte Stk Ent Phy UVC Vision TCO RMS])
+	measure 'Ecoul Total Sans RAR' =
+			VAR v_1 = [Qte Vte] + [Qte Stk Mag (YC Encours)] + [Qte Stk Ent Phy UVC Vision TCO RMS]
+			RETURN
+			    DIVIDE ( [Qte Vte], v_1 )
+		formatString: #,##0 %
+		displayFolder: Ecoulement
+
+	/// [Qte Vte] / [Qte Vte] + [Qte Stk Mag (YC Encours)] + [Qte Stk Ent Phy UVC Vision TCO RMS] + [Reste à recevoir]
+	measure 'Ecoul Total Avec RAR' =
+			VAR v_1 = [Qte Vte] + [Qte Stk Mag (YC Encours)] + [Qte Stk Ent Phy UVC Vision TCO RMS] + [Reste à recevoir]
+			RETURN
+			    DIVIDE ( [Qte Vte], v_1 )
+		formatString: #,##0 %
+		displayFolder: Ecoulement
+
+	measure 'Nb Sem avec Vtes TOTAL' = ```
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Calendrier'[LIB_AN_SEM],
+			        'Nomenclature Produit'[COD_RC_TXT],
+			        "QTE_VTE@",  [Qte Vte])
+			    
+			RETURN
+			    COUNTX ( FILTER ( v_1, [QTE_VTE@] > 0 ), [LIB_AN_SEM] )
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'PCB Colis Mixte' =
+			VAR v_1 =
+			    IF (
+			        SUM ( 'F_CMD_FRN'[QTE_CMD_FRN] ) = 0,
+			        0,
+			        SUM ( 'F_CMD_FRN'[QTE_CMD_FRN_UVC] )
+			    )
+			VAR v_2 =
+			    IF (
+			        SUM ( 'F_CMD_FRN'[QTE_CMD_FRN] ) = 0,
+			        1,
+			        SUM ( 'F_CMD_FRN'[QTE_CMD_FRN_UVC] )
+			    )
+			RETURN
+			    DIVIDE ( v_1, v_2 )
+		formatString: #,##0.0
+		displayFolder: A Classer
+
+	/// [Qte Vte] / [Nb Mag Vendeurs]  ne prend pas en compte le nb de sem de vtes
+	measure 'Déf hebdo / Nb Mag Vendeurs' =
+			VAR v_1 =
+			    DIVIDE ( [Nb Sem avec Vtes (vision pays/sem)], [Nb RC vendues pays] )
+			VAR v_2 =
+			    DIVIDE ( [Nb Mag Vendeurs (vision pays/sem)], v_1 )
+			VAR v_3 =
+			    DIVIDE ( [Nb Sem avec Vtes (vision pays/sem)], [Nb RC vendues pays] )
+			VAR v_4 =
+			    DIVIDE ( [Qte Vte], v_2 )
+			RETURN
+			    DIVIDE ( v_4, v_3 )
+		formatString: #,##0.0
+		displayFolder: Déf
+
+	measure 'Sem début Histoire' = WEEKNUM ( SELECTEDVALUE ( 'Saison Histoire Typo'[DAT_DEB_HISTOIRE] ),21 )
+		displayFolder: A Classer
+
+	measure 'Sem fin Histoire' = WEEKNUM ( SELECTEDVALUE ( 'Saison Histoire Typo'[DAT_FIN_HISTOIRE] ),21 )
+		displayFolder: A Classer
+
+	measure 'Nb RCT Avec Dispo UVC TCO' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_ENT_CUG',
+			        'Nomenclature Produit'[COD_RCT_TXT],
+			        "QTE@", [Qte Stk Ent Dispo UVC Vision TCO RMS]
+			    )
+			RETURN
+			    COUNTX ( FILTER ( v_1, [QTE@] > 0 ), [COD_RCT_TXT] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// Compte du nombre RC uniquement ceux qui ont une quantité stock magasin superieure à zero
+	measure 'Nb RCT' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Nomenclature Produit'[COD_RCT_TXT],
+			        "QTE_STK_THE_MAG_STOCK@", SUM ( F_STK_THE_MAG_CUG[QTE_STK_THE_MAG_STOCK] )
+			    )
+			RETURN
+			    COUNTX (v_1, [COD_RCT_TXT] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// 1 - ( [Nb RCT Avec Dispo UVC TCO] /  [Nb RCT] )
+	measure 'Taux Rupture Entrepot' = VAR v_1 = DIVIDE ( [Nb RCT Avec Dispo UVC TCO], [Nb RCT] ) RETURN 1 - v_1
+		formatString: #,##0 %
+		displayFolder: Taux
+
+	/// [Qte Vte] + [Qte Stk Mag (YC Encours)] + [Qte Stk Ent Phy UVC Vision TCO RMS] + [Reste à recevoir]
+	measure 'Achats réels Coll qtés (hors stock sortant)' = [Qte Vte] + [Qte Stk Mag (YC Encours)] + [Qte Stk Ent Phy UVC Vision TCO RMS] + [Reste à recevoir]
+		displayFolder: Achat
+
+	/// [Achats réels Coll qtés (hors stock sortant)] * [Prx Vte CAT TTC Fr]
+	measure 'Achats réels Coll Valo PV (hors stock sortant)' = [Achats réels Coll qtés (hors stock sortant)] * [Prx Vte CAT TTC Fr]
+		displayFolder: Achat
+
+	measure 'CA TTC N  période de co' = ```
+			var v__ = VALUES('Saison Histoire Typo'[COD_REF_COMM])
+			var v_2 = ADDCOLUMNS(v__,"CA",
+			var deb = SELECTEDVALUE('Saison Histoire Typo'[DAT_DEB_HISTOIRE])
+			var fin  = SELECTEDVALUE('Saison Histoire Typo'[DAT_FIN_HISTOIRE])
+			return 
+			CALCULATE(
+			     sum(F_VTE_MAG_CUG[MNT_CA_NET_TTC_EUR]),
+			  keepfilters(Calendrier[DAT] >= deb &&
+			   Calendrier[DAT] <= fin)
+			)
+			)
+			
+			return sumx(v_2, [CA])
+			```
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	measure 'Nb Mag Détenteurs TOTAL' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Magasin'[COD_MAGASIN_TXT],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS ( v_1, "Qtevte@", if([Qte Vte]=0 || ISBLANK([Qte Vte]) , 0 , [Qte Vte]) , "QteStk@", [Qte Stk Mag (YC Encours)] )
+			VAR v_3 =
+			    ADDCOLUMNS (
+			        v_2,
+			        "checkrule",
+			            IF ( ( [Qtevte@] + IF ( [QteStk@] < 0 || isblank([QteStk@]), 0, [QteStk@] ) ) > 0, 1, 0 )
+			    )
+			return SUMX(v_3,[checkrule])
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// ([Qte Vte] / [Nb Mag Détenteurs] ) / [Nb Sem avec Vtes]
+	measure 'Déf /Nb Mag Détenteurs ' =
+			VAR v_1 =
+			    DIVIDE ( [Nb Sem avec Vtes (vision pays/sem)], [Nb RC vendues pays] )
+			VAR v_2 =
+			    DIVIDE ( [Nb Mag Détenteurs (vision pays/sem)], v_1 )
+			VAR v_3 =
+			    DIVIDE ( [Nb Sem avec Vtes (vision pays/sem)], [Nb RC vendues pays] )
+			VAR v_4 =
+			    DIVIDE ( [Qte Vte], v_2 )
+			RETURN
+			    DIVIDE ( v_4, v_3 )
+		formatString: #,##0.0
+		displayFolder: Déf
+
+	measure 'Nb Sem avec Vtes Période de co' = ```
+			 VAR v__ =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Calendrier'[LIB_AN_SEM],
+			        'Saison Histoire Typo'[COD_REF_COMM]
+			    )
+			VAR v_1 =
+			    ADDCOLUMNS (
+			        v__,
+			        "QTE_VTE@",
+			            VAR deb =
+			                SELECTEDVALUE ( 'Saison Histoire Typo'[DAT_DEB_HISTOIRE] )
+			            VAR fin =
+			                SELECTEDVALUE ( 'Saison Histoire Typo'[DAT_FIN_HISTOIRE] )
+			            RETURN
+			                CALCULATE (
+			                    [Qte Vte],
+			                    KEEPFILTERS ( Calendrier[DAT] >= deb && Calendrier[DAT] <= fin )
+			                )
+			    )
+			RETURN
+			    countX ( v_1,[LIB_AN_SEM])
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Var Histoire en cours' =
+			VAR v_1 =
+			    IF (
+			        ISBLANK ( [Sem début Histoire] ) && ISBLANK ( [Sem fin Histoire] ),
+			        blank(),
+			        IF (
+			            ( [Sem début Histoire] - 1 )
+			                <= WEEKNUM ( max ( 'Calendrier'[DAT] ),21 )
+			                && [Sem fin Histoire] >= WEEKNUM ( max ( 'Calendrier'[DAT] ),21 ),
+			            "Histoire en cours",
+			            "Autres histoire"
+			        )
+			    )
+			VAR v_2 =
+			    SUMMARIZE (
+			        'Saison Histoire Typo',
+			        'Saison Histoire Typo'[COD_HISTOIRE],
+			        'Saison Histoire Typo'[LIB_SS_TYP_HIST],
+			        "checkhistoire", v_1
+			    )
+			RETURN
+			    MAXX ( v_2, [checkhistoire] )
+		displayFolder: A Classer
+
+	/// ([Qte période de co] / [Nb Mag Détenteurs ] ) / [Nb Sem avec Vtes Période de co]
+	measure 'Déf Periode de co / Nb Mag Détenteurs ' =
+			VAR v_1 =
+			    DIVIDE (
+			        [Nb Sem avec Vtes Période de co (vision pays/sem)],
+			        [Nb RC vendues pays Période de co]
+			    )
+			VAR v_2 =
+			    DIVIDE ( [Nb Mag Détenteurs Période de co (vision pays/sem)], v_1 )
+			VAR v_3 =
+			    DIVIDE (
+			        [Nb Sem avec Vtes Période de co (vision pays/sem)],
+			        [Nb RC vendues pays Période de co]
+			    )
+			VAR v_4 =
+			    DIVIDE ( [Qte Vte période de co], v_2 )
+			RETURN
+			    DIVIDE ( v_4, v_3 )
+		formatString: #,##0.0
+		displayFolder: Déf
+
+	measure 'Mnt Stk mag Valo PV' = ```
+			sum('F_STK_THE_MAG_CUG'[MNT_STK_THE_MAG_VTE_CAT_TTC_DE]) 
+			```
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// [Prx Vte CAT TTC Fr] * [Qte Vte]
+	measure 'Mt Px Vte Catalogue TTC Fr' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Magasin'[LIB_PAYS],
+			        'Nomenclature'[LIB_RAYON],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "Mt Px Vte Catalogue TTC FR@", [Prx Vte CAT TTC Fr] * [Qte Vte]
+			    )
+			RETURN
+			    SUMX ( v_2, [Mt Px Vte Catalogue TTC FR@] )
+		formatString: " #,##0.00 €"
+		displayFolder: Montant
+
+	/// Montant de Vente catalogue TTC N-1
+	measure 'Mt Px Vte Catalogue TTC Fr N-1' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			    [Mt Px Vte Catalogue TTC Fr],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE (     [Mt Px Vte Catalogue TTC Fr], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0.00 €"
+		displayFolder: Montant
+
+	measure 'Nb RC vendues pays' = ```
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Magasin'[COD_PAYS],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			      )  
+			      
+			  var v_2 = Addcolumns(v_1,    "QTE_VTE@",[Qte Vte]  )
+			    
+			RETURN
+			    COUNTX ( FILTER ( v_2, [QTE_VTE@] > 0 ), [COD_RC_TXT] )
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb Mag Détenteurs (vision pays/sem)' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Calendrier'[LIB_AN_SEM],
+			        'Magasin'[COD_MAGASIN_TXT],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS ( v_1, "Qtevte@",if([Qte Vte]=0 || ISBLANK([Qte Vte]) , 0 , [Qte Vte]) , "QteStk@",[Qte Stk Theo Mag Stock] )
+			VAR v_3 =
+			    ADDCOLUMNS (
+			        v_2,
+			        "checkrule",
+			            IF ( ( [Qtevte@] + IF ( [QteStk@] < 0 || isblank([QteStk@]), 0, [QteStk@] ) ) > 0, 1, 0 )
+			    )
+			RETURN
+			    SUMX ( v_3, [checkrule] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// compte distint de cod_magasin
+	measure 'Nb Mag Vendeurs (vision pays/sem)' =
+			VAR v_1 =
+			    SUMMARIZE (
+			       'F_VTE_MAG_CUG',
+			        'Magasin'[COD_MAGASIN_TXT],
+			        'Calendrier'[LIB_AN_SEM],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			    )
+			var v_2 = addcolumns (v_1 , "QTE_VTE@", [Qte Vte])
+			
+			var v_3 = addcolumns (v_2, "checkrule@", if( [QTE_VTE@] > 0 , 1 , 0))
+			
+			RETURN
+			        sumx ( v_3, [checkrule@] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb Sem avec Vtes (vision pays/sem)' = ```
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Calendrier'[LIB_AN_SEM],
+			        'Magasin'[COD_PAYS],
+			        'Nomenclature Produit'[COD_RC_TXT],
+			        "QTE_VTE@",  [Qte Vte])
+			    
+			RETURN
+			    COUNTX ( FILTER ( v_1, [QTE_VTE@] > 0 ), [LIB_AN_SEM] )
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb Sem avec Vtes Période de co (vision pays/sem)' = ```
+			 VAR v__ =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Calendrier'[LIB_AN_SEM],
+			        'Magasin'[COD_PAYS],
+			        'Saison Histoire Typo'[COD_REF_COMM]
+			    )
+			VAR v_1 =
+			    ADDCOLUMNS (
+			        v__,"check",
+			         VAR deb =
+			                SELECTEDVALUE ( 'Saison Histoire Typo'[DAT_DEB_HISTOIRE] )
+			            VAR fin =
+			                SELECTEDVALUE ( 'Saison Histoire Typo'[DAT_FIN_HISTOIRE] )
+			            RETURN
+			                CALCULATE (
+			                   [Nb Sem avec Vtes (vision pays/sem)],
+			                    KEEPFILTERS ( Calendrier[DAT] >= deb && Calendrier[DAT] <= fin )
+			                )
+			    )
+			RETURN
+			    sumx ( v_1,[check])
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// Compte du nombre RC uniquement ceux qui ont une quantité stock magasin superieure à zero  et une quantité de vente superieure à zero
+	measure 'Nb RC Livrées Mag' =
+			VAR v_1 =
+			    SUMMARIZE ( 'F_STK_THE_MAG_CUG', 'Nomenclature Produit'[COD_RC_TXT] )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "QTE_STK_THE_MAG_STOCK@", SUM ( F_STK_THE_MAG_CUG[QTE_STK_THE_MAG_STOCK] ),
+			        "QTE_VTE@", SUM ( F_VTE_MAG_CUG[QTE_VTE] )
+			    )
+			VAR v_3 =
+			    ADDCOLUMNS (
+			        v_2,
+			        "control@",
+			            IF (
+			                [QTE_VTE@]
+			                    + IF ( [QTE_STK_THE_MAG_STOCK@] < 0, 0, [QTE_STK_THE_MAG_STOCK@] ) > 0,
+			                1,
+			                0
+			            )
+			    )
+			RETURN
+			    SUMX ( v_3, [control@] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// [CA TTC Vte] / [Nb RC Vendues]
+	measure 'CA TTC / Ref co N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA TTC / Ref co],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			       CALCULATE ( [CA TTC / Ref co], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// [Qte Vte]  / ([Qte Vte] + [Qte Stk Mag (YC Encours)])
+	measure 'Ecoul Mag N-1' =
+			VAR v_1 = [Qte Vte N-1] + [Qte Stk Mag (YC Encours) N-1]
+			RETURN
+			    DIVIDE ( [Qte Vte N-1], v_1 )
+		formatString: #,##0 %
+		displayFolder: Ecoulement
+
+	/// [Qte Vte] / ([Qte Vte] + [Qte Stk Mag (YC Encours)] + [Qte Stk Ent Phy UVC Vision TCO RMS])
+	measure 'Ecoul Total Sans RAR N-1' =
+			VAR v_1 = [Qte Vte N-1] + [Qte Stk Mag (YC Encours) N-1] + [Qte Stk Ent Phy UVC Vision TCO RMS N-1]
+			RETURN
+			    DIVIDE ( [Qte Vte N-1], v_1 )
+		formatString: #,##0 %
+		displayFolder: Ecoulement
+
+	/// ([Qte Stk Ent Dispo UVC Vision TCO RMS] - [Qte Stk Ent Dispo UVC Vision TCO RMS N-1] ) / [Qte Stk Ent Dispo UVC Vision TCO RMS N-1]  
+	measure 'Evol Qte Stk Ent Phy UVC Vision TCO RMS' =
+			VAR v_1 = [Qte Stk Ent Phy UVC Vision TCO RMS] - [Qte Stk Ent Phy UVC Vision TCO RMS N-1]
+			RETURN
+			    DIVIDE ( v_1,  [Qte Stk Ent Phy UVC Vision TCO RMS N-1] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Qte Stk Ent Dispo UVC Vision TCO RMS] - [Qte Stk Ent Dispo UVC Vision TCO RMS N-1] ) / [Qte Stk Ent Dispo UVC Vision TCO RMS N-1]  
+	measure 'Evol Qte Stk Total (Mag + Ent)' =
+			VAR v_1 = [Qte Stk Total (Mag + Ent)] - [Qte Stk Total (Mag + Ent) N-1]
+			RETURN
+			    DIVIDE ( v_1,  [Qte Stk Total (Mag + Ent) N-1] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ( [CA HT Vte] - [CA HT Vte N-1]) / [CA HT Vte N-1] 
+	measure 'Evol CA TTC / Réf co' = VAR v_1 = divide( [CA TTC / Ref co], [CA TTC / Ref co N-1]) RETURN  v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Qte Vte] - [Qte Vte n-1]) / [Qte Vte n-1]
+	measure 'Evol Qte / Réf co' = VAR v_1 = [Qte Vte / Ref co ] - [Qte Vte / Ref co  N-1] RETURN DIVIDE ( v_1, [Qte Vte / Ref co  N-1] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// [Mt Marge Vte] / [Nb RC Vendues]
+	measure 'Mt Marge Vte / Ref co N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Mt Marge Vte / Ref co],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Mt Marge Vte / Ref co], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// ([Mt Marge Vte]- [Mt Marge Vte N-1])-1
+	measure 'Evol Marge / Réf co' =
+			VAR v_1 =
+			    DIVIDE ( [Mt Marge Vte / Ref co], [Mt Marge Vte / Ref co N-1] )
+			RETURN
+			    v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// sum('F_VTE_MAG_CUG'[MNT_VTE_CAT_TTC_EUR]) / [Qte Vte]
+	measure 'Prx Vte CAT TTC N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Prx Vte CAT TTC],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Prx Vte CAT TTC], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0.00
+		displayFolder: Montant
+
+	/// sum('F_VTE_MAG_CUG'[MNT_VTE_CAT_TTC_EUR]) / [Qte Vte]
+	measure 'Prx Vte CAT TTC Fr N-1' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Prx Vte CAT TTC Fr],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Prx Vte CAT TTC Fr], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0.00
+		displayFolder: Montant
+
+	/// [CA HT Vte] - [Mt PCM HT]
+	measure 'Mt Marge Vte N-2' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Mt Marge Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Mt Marge Vte],  DATEADD ( 'Calendrier'[DAT], -2, YEAR ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// [CA HT Vte] - [Mt PCM HT]
+	measure 'Mt Marge Vte N-3' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Mt Marge Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Mt Marge Vte],  DATEADD ( 'Calendrier'[DAT], -3, YEAR ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// ([Qte Vte] - [Qte Vte n-1]) / [Qte Vte n-1]
+	measure 'Evol Qte Vte N/N-2' = VAR v_1 = [Qte Vte] - [Qte Vte n-2] RETURN DIVIDE ( v_1, [Qte Vte n-2] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Qte Vte] - [Qte Vte n-1]) / [Qte Vte n-1]
+	measure 'Evol Qte Vte N/N-3' = VAR v_1 = [Qte Vte] - [Qte Vte n-3] RETURN DIVIDE ( v_1, [Qte Vte n-3] )
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Mt Marge Vte]- [Mt Marge Vte N-1])-1
+	measure 'Evol Marge Vte N/N-2' = VAR v_1 = DIVIDE ( [Mt Marge Vte], [Mt Marge Vte N-2] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([Mt Marge Vte]- [Mt Marge Vte N-1])-1
+	measure 'Evol Marge Vte N/N-3' = VAR v_1 = DIVIDE ( [Mt Marge Vte], [Mt Marge Vte N-3] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// Mt Marge Vte / Ca TTC
+	measure 'Taux de Marge N-2' = DIVIDE ( [Mt Marge Vte N-2], [CA TTC Vte N-2] )
+		formatString: #,##0.0 %
+		displayFolder: Taux
+
+	/// ( [Taux de Marge] - [Taux de Marge N-1] ) * 100
+	measure 'Evol Taux De Marge N/N-2' = ( [Taux de Marge] - [Taux de Marge N-2] ) * 100
+		formatString: #,##0.0
+		displayFolder: Evolution
+
+	/// Mt Marge Vte / Ca TTC
+	measure 'Taux de Marge N-3' = DIVIDE ( [Mt Marge Vte N-3], [CA TTC Vte N-3] )
+		formatString: #,##0.0 %
+		displayFolder: Taux
+
+	/// ( [Taux de Marge] - [Taux de Marge N-1] ) * 100
+	measure 'Evol Taux De Marge N/N-3' = ( [Taux de Marge] - [Taux de Marge N-3] ) * 100
+		formatString: #,##0.0
+		displayFolder: Evolution
+
+	/// Somme du chiffre d'affaire
+	measure 'CA TTC Vte Devise' = ```
+			 var v_1= sum(F_VTE_MAG_CUG[MNT_CA_NET_TTC_EUR]) 
+			 var v_2= max('F_VTE_MAG_CUG'[TAU_DEV_VERS_EUR])
+			 return divide( v_1,v_2)
+			```
+		formatString: " #,##0"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire
+	measure 'CA HT Vte Devise N-1' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA HT Vte Devise],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [CA HT Vte Devise], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire de l'année N-2 de l'année filtrée 
+	measure 'CA HT Vte Devise N-2' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			           [CA HT Vte Devise],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [CA HT Vte Devise], DATEADD ( 'Calendrier'[DAT], -2, YEAR ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire de l'année N-3 de l'année filtrée 
+	measure 'CA HT Vte Devise N-3' =
+			
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA HT Vte Devise],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			       CALCULATE ( [CA HT Vte Devise], DATEADD ( 'Calendrier'[DAT], -3, YEAR ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire
+	measure 'CA HT Vte Devise' = ```
+			 var v_1= sum(F_VTE_MAG_CUG[MNT_CA_NET_HT_EUR]) 
+			 var v_2= max('F_VTE_MAG_CUG'[TAU_DEV_VERS_EUR])
+			 return divide( v_1,v_2)
+			```
+		formatString: " #,##0"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire
+	measure 'CA TTC Vte Devise N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA TTC Vte Devise],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [CA TTC Vte Devise], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire de l'année N-2 de l'année filtrée 
+	measure 'CA TTC Vte Devise N-2' =
+			
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA TTC Vte Devise],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			       CALCULATE ( [CA TTC Vte Devise], DATEADD ( 'Calendrier'[DAT], -2, YEAR ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// Somme du chiffre d'affaire de l'année N-3 de l'année filtrée 
+	measure 'CA TTC Vte Devise N-3' =
+			
+			
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [CA TTC Vte Devise],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			     CALCULATE ( [CA TTC Vte Devise], DATEADD ( 'Calendrier'[DAT], -3, YEAR ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: CA
+
+	/// ( [CA HT Vte] - [CA HT Vte N-1]) / [CA HT Vte N-1] 
+	measure 'Evol CA HT Vte Devise N/N-1' = VAR v_1 = divide([CA HT Vte Devise] , [CA HT Vte Devise N-1] ) RETURN  v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	measure 'Evol CA HT Vte Devise N/N-2' = VAR v_1 = DIVIDE ( [CA HT Vte Devise], [CA HT Vte Devise N-2] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	measure 'Evol CA HT Vte Devise N/N-3' = VAR v_1 = divide([CA HT Vte Devise] , [CA HT Vte Devise N-3] ) RETURN  v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// ([CA TTC Vte] -[CA TTC Vte N-1]) / [CA TTC Vte N-1]
+	measure 'Evol CA TTC Vte Devise N/N-1' = VAR v_1 = divide([CA TTC Vte Devise] , [CA TTC Vte Devise N-1] ) RETURN  v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	measure 'Evol CA TTC Vte Devise N/N-2' = VAR v_1 = DIVIDE ( [CA TTC Vte Devise], [CA TTC Vte Devise N-2] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	measure 'Evol CA TTC Vte Devise N/N-3' = VAR v_1 = DIVIDE ( [CA TTC Vte Devise], [CA TTC Vte Devise N-3] ) RETURN v_1 - 1
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	measure 'Nb RC vendues (vision pays/sem)' = ```
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Calendrier'[LIB_AN_SEM],
+			        'Magasin'[COD_PAYS],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			      )  
+			      
+			  var v_2 = Addcolumns(v_1,    "QTE_VTE@",[Qte Vte]  )
+			    
+			RETURN
+			    COUNTX ( FILTER ( v_2, [QTE_VTE@] > 0 ), [COD_RC_TXT] )
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// ([Qte Vte] / [Nb Mag Détenteurs] ) / [Nb Sem avec Vtes]
+	measure 'Déf /Nb Mag Détenteurs N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Déf /Nb Mag Détenteurs ],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Déf /Nb Mag Détenteurs ], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0.0
+		displayFolder: Déf
+
+	/// if ( [Nb RC Vendues et avec Stk Mag] /  [Nb RC Avec Stk Mag] > 0 , faire le calcul , "Pas de stock")
+	measure 'Taux de mise en vente N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Taux de mise en vente],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Taux de mise en vente], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0 %
+		displayFolder: Taux
+
+	measure 'Nb Mag Détenteurs TOTAL N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Nb Mag Détenteurs TOTAL],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE (
+			            [Nb Mag Détenteurs TOTAL],
+			            SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] )
+			        )
+			    )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// compte distint de cod_magasin
+	measure 'Nb Mag Vendeurs TOTAL N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Nb Mag Vendeurs TOTAL],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Nb Mag Vendeurs TOTAL], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb Sem avec Vtes TOTAL N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			          [Nb Sem avec Vtes TOTAL],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Nb Sem avec Vtes TOTAL], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb Mag Détenteurs Période de co (vision pays/sem)' = ```
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Calendrier'[LIB_AN_SEM],
+			        'Magasin'[COD_MAGASIN_TXT],
+			        'Saison Histoire Typo'[COD_REF_COMM],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS ( v_1, "checkrule", 
+			var deb = SELECTEDVALUE('Saison Histoire Typo'[DAT_DEB_HISTOIRE])
+			var fin  = SELECTEDVALUE('Saison Histoire Typo'[DAT_FIN_HISTOIRE])
+			return 
+			CALCULATE(
+			  [Nb Mag Détenteurs (vision pays/sem)]  ,
+			  keepfilters(Calendrier[DAT] >= deb &&
+			   Calendrier[DAT] <= fin)
+			))
+			
+			RETURN
+			    SUMX ( v_2, [checkrule] )
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb RC vendues pays Période de co' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Magasin'[COD_PAYS],
+			        'Saison Histoire Typo'[COD_REF_COMM],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "check",
+			            VAR deb =
+			                SELECTEDVALUE ( 'Saison Histoire Typo'[DAT_DEB_HISTOIRE] )
+			            VAR fin =
+			                SELECTEDVALUE ( 'Saison Histoire Typo'[DAT_FIN_HISTOIRE] )
+			            RETURN
+			                CALCULATE (
+			                    [Nb RC vendues pays],
+			                    KEEPFILTERS ( Calendrier[DAT] >= deb && Calendrier[DAT] <= fin )
+			                )
+			    )
+			RETURN
+			    SUMX ( v_2, [check] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	/// Montant stock entrepot PCM HT
+	measure 'Mt PCM HT Periode de co' = ```
+			var v__ = VALUES('Saison Histoire Typo'[COD_REF_COMM])
+			var v_2 = ADDCOLUMNS(v__,"PCM",
+			var deb = SELECTEDVALUE('Saison Histoire Typo'[DAT_DEB_HISTOIRE])
+			var fin  = SELECTEDVALUE('Saison Histoire Typo'[DAT_FIN_HISTOIRE])
+			return 
+			CALCULATE(
+			     _Mesures[Mt PCM HT],
+			  keepfilters(Calendrier[DAT] >= deb &&
+			   Calendrier[DAT] <= fin)
+			)
+			)
+			
+			return sumx(v_2, [PCM])
+			```
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	measure 'Prx PMD HT initial' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        F_VTE_MAG_CUG,
+			        'Saison Histoire Typo'[COD_HISTOIRE],
+			        'Saison Histoire Typo'[DAT_DEB_HISTOIRE]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "@FirstWeek",
+			            VAR selecteddate = [DAT_DEB_HISTOIRE]
+			            RETURN
+			                CALCULATE (
+			                    MAX ( Calendrier[LIB_AN_SEM] ),
+			                    ALL ( Calendrier ),
+			                    Calendrier[DAT] = selecteddate
+			                )
+			    )
+			VAR v_3 =
+			    ADDCOLUMNS (
+			        v_2,
+			        "@PMD_Init",
+			            VAR Firstweek = [@FirstWeek]
+			            RETURN
+			                CALCULATE (
+			                    [Prx PMD HT],
+			                    ALL ( Calendrier ),
+			                    ALL ( Magasin[Lib_Pays] ),
+			                    Calendrier[LIB_AN_SEM] = Firstweek
+			                )
+			    )
+			VAR v_4 =
+			    ADDCOLUMNS (
+			        v_3,
+			        "@PMD_Initfinal", IF( ISBLANK ( [@PMD_Init] ),calculate([Prx PMD HT],all(calendrier)), [@PMD_Init] )
+			    )
+			RETURN
+			    MAXX ( v_4, [@PMD_Initfinal] )
+		formatString: #,##0.00
+		displayFolder: Montant
+
+	/// Pxr PCM HT / Qte vte 
+	measure 'Prx PCM HT initial' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        F_VTE_MAG_CUG,
+			        'Saison Histoire Typo'[COD_HISTOIRE],
+			        'Saison Histoire Typo'[DAT_DEB_HISTOIRE]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "@FirstWeek",
+			            VAR selecteddate = [DAT_DEB_HISTOIRE]
+			            RETURN
+			                CALCULATE (
+			                    MAX ( Calendrier[LIB_AN_SEM] ),
+			                    ALL ( Calendrier ),
+			                    Calendrier[DAT] = selecteddate
+			                )
+			    )
+			VAR v_3 =
+			    ADDCOLUMNS (
+			        v_2,
+			        "@PCM_Init",
+			            VAR Firstweek = [@FirstWeek]
+			            RETURN
+			                CALCULATE (
+			                    [Prx PCM HT],
+			                    ALL ( Calendrier ),
+			                    Calendrier[LIB_AN_SEM] = Firstweek
+			                )
+			    )
+			VAR v_4 =
+			    ADDCOLUMNS (
+			        v_3,
+			        "@PCM_Init_final",
+			            IF (
+			                ISBLANK ( [@PCM_Init] ),
+			                [Prx PCM HT] * ( [Prx PMD HT initial] / [Prx PMD HT] ),
+			                [@PCM_Init]
+			            )
+			    )
+			RETURN
+			    MAXX ( v_4, [@PCM_Init_final] )
+		formatString: #,##0.00
+		displayFolder: Montant
+
+	/// [CA HT Vte] - ( [Qte Vte] * [Prx PCM HT initial]  vision Pays / RC
+	measure 'Mt Marge PCM initial' = ```
+			/*VAR v_1 =
+			    SUMMARIZE (
+			        'F_VTE_MAG_CUG',
+			        'Magasin'[LIB_PAYS],
+			        'Nomenclature Produit'[COD_RC_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS ( v_1, "@marge", [CA HT Vte] - ( [Qte Vte] * [Prx PCM HT initial] ) )
+			RETURN
+			    SUMX ( v_2, [@marge] )*/
+			    
+			 sum(F_VTE_MAG_CUG[MNT_CA_NET_HT_EUR]) -  sum('F_VTE_MAG_CUG'[MNT_PCM_HT_EUR])
+			```
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// Mt Marge Vte / Ca TTC
+	measure 'Taux marge PCM initial' = DIVIDE ([Mt Marge PCM initial], [CA TTC Vte])
+		formatString: #,##0.0 %
+		displayFolder: Taux
+
+	measure 'Mt Marge PCM initial N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Mt Marge PCM initial],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Mt Marge PCM initial], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: " #,##0 €"
+		displayFolder: Montant
+
+	/// ([Nb RC Vendues] / [Nb RC Vendues N-1] ) - 1
+	measure 'Evol Marge PCM Initial' = VAR v_1 = [Mt Marge PCM initial] - [Mt Marge PCM initial N-1]  RETURN divide (v_1 ,[Mt Marge PCM initial N-1])
+		formatString: #,##0.0 %
+		displayFolder: Evolution
+
+	/// [Mt Marge PCM initial N-1] / [CA TTC Vte N-1]
+	measure 'Taux marge PCM initial N-1' = DIVIDE ([Mt Marge PCM initial N-1],[CA TTC Vte N-1] )
+		formatString: #,##0.0 %
+		displayFolder: Taux
+
+	/// ( [Taux marge PCM initial] - [Taux marge PCM initial N-1] ) * 100
+	measure 'Evol Taux De Marge PCM Initial N/N-1' = ( [Taux marge PCM initial] - [Taux marge PCM initial N-1] ) * 100
+		formatString: #,##0.0
+		displayFolder: Evolution
+
+	/// ( (Mnt PV CAT TTC/TVA)-qtés*pc initial ) / Mnt PV CAT TTC
+	measure 'TME PCM initial' =
+			DIVIDE (
+			     [Mt Px Vte Catalogue TTC / TVA]  - [CA HT Vte] + [Mt Marge PCM initial],
+			    [Mt Px Vte Catalogue TTC]
+			)
+		formatString: #,##0.0 %
+		displayFolder: Montant
+
+	/// ( (Mnt PV CAT TTC/TVA)-qtés*pc initial ) / Mnt PV CAT TTC
+	measure 'TME PCM initial N-1' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			           [TME PCM initial],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [TME PCM initial], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0.0 %
+		displayFolder: Montant
+
+	/// ( [TME PCM initial]- [TME PCM initial N-1] ) * 100
+	measure 'Evol TME PCM Initial N/N-1' = ( [TME PCM initial]- [TME PCM initial N-1] ) * 100
+		formatString: #,##0.0
+		displayFolder: Evolution
+
+	measure 'Grille Taille' =
+			VAR v_1 =
+			    SUMMARIZE ( F_VTE_MAG_CUG, 'Nomenclature Produit'[COD_RC_TXT] , 'Saison Histoire Typo'[COD_HISTOIRE] )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "colonneB",
+			           calculate( CONCATENATEX (
+			                CALCULATETABLE ( VALUES ( 'Nomenclature Produit'[LIB_TAILLE] ) ),
+			                'Nomenclature Produit'[LIB_TAILLE],
+			                ", ",
+			                'Nomenclature Produit'[LIB_TAILLE], ASC
+			            ),all(calendrier))
+			    )
+			RETURN
+			   MAXX ( v_2, [colonneB] )
+		displayFolder: A Classer
+
+	/// ( (Mnt PV CAT TTC/TVA)-qtés*pc initial ) / Mnt PV CAT TTC
+	measure 'Mt Px Vte Catalogue TTC / TVA' =
+			VAR TVAPays =
+			    SUMMARIZE ( 'F_VTE_MAG_CUG', 'Magasin'[LIB_PAYS] )
+			VAR v_1 =
+			    ADDCOLUMNS (
+			        TVAPays,
+			        "@Mt Px Vte Catalogue ",
+			            DIVIDE (
+			                [Mt Px Vte Catalogue TTC],
+			                1 + DIVIDE ( MAX ( 'F_VTE_MAG_CUG'[TAU_TVA] ), 100 )
+			            )
+			    )
+			RETURN
+			    SUMX ( v_1, [@Mt Px Vte Catalogue ] )
+		formatString: #,##0.0 %
+		displayFolder: Montant
+
+	measure 'Nb RCT Avec Dispo UVC TCO copy' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_ENT_CUG',
+			        'Nomenclature Produit'[COD_RCT_TXT],
+			        "QTE@", [Qte Stk Ent Dispo UVC RMS]
+			    )
+			RETURN
+			    COUNTX ( FILTER ( v_1, [QTE@] > 0 ), [COD_RCT_TXT] )
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb RCT En Rupture Mag' = ```
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Nomenclature'[COD_REF_NOMENC],
+			        'Magasin'[COD_MAGASIN_RMS],
+			        'Saison Histoire Typo'[COD_REF_COMM],
+			        'Nomenclature Produit'[COD_RCT_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "check@",
+			                    [Rupture Mag]
+			    )
+			RETURN
+			    SUMX ( v_2, [check@] )
+			
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb RCT En Rupture Mag / Nb RCT Livré' = divide([Nb RCT En Rupture Mag],[Nb RCT Livré])
+		formatString: #,##0.00 %
+		displayFolder: Nombre
+
+	measure 'Nb RCT En Rupture Appro' = ```
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Nomenclature'[COD_REF_NOMENC],
+			        'Magasin'[COD_MAGASIN_RMS],
+			        'Saison Histoire Typo'[COD_REF_COMM],
+			        'Nomenclature Produit'[COD_RCT_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "check@",
+			 
+			                    [Rupture Appro]
+			    )
+			RETURN
+			    SUMX ( v_2, [check@] )
+			
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb RCT En Rupture Achat' = ```
+			VAR v_1 =
+			    SUMMARIZE (
+			        'F_STK_THE_MAG_CUG',
+			        'Nomenclature'[COD_REF_NOMENC],
+			        'Magasin'[COD_MAGASIN_RMS],
+			        'Saison Histoire Typo'[COD_HISTOIRE],
+			        'Nomenclature Produit'[COD_RCT_TXT]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS ( v_1, "check@",
+			                    [Rupture Achat] 
+			                ) 
+			RETURN
+			    SUMX ( v_2, [check@] )
+			
+			```
+		formatString: #,##0
+		displayFolder: Nombre
+
+	measure 'Nb RCT En Rupture Appro / Nb RCT Livré' = divide([Nb RCT En Rupture Appro],[Nb RCT Livré])
+		formatString: #,##0.00 %
+		displayFolder: Nombre
+
+	measure 'Nb RCT En Rupture Achat / Nb RCT Livré' = divide([Nb RCT En Rupture Achat],[Nb RCT Livré])
+		formatString: #,##0.00 %
+		displayFolder: Nombre
+
+	measure 'New Measure' =
+			(
+			    [Qte Stk Ent Phy UVC Vision TCO RMS]
+			        - CALCULATE (
+			            [Qte Stk Ent Phy UVC Vision TCO RMS N-1],
+			            'Saison Histoire Typo'[COD_SAISON]
+			                = (
+			                    LEFT ( SELECTEDVALUE ( 'Saison Histoire Typo'[COD_SAISON] ), 1 )
+			                        & RIGHT ( SELECTEDVALUE ( 'Saison Histoire Typo'[COD_SAISON] ), 2 ) - 1
+			                )
+			        )
+			)
+			    / CALCULATE (
+			        [Qte Stk Ent Phy UVC Vision TCO RMS N-1],
+			        'Saison Histoire Typo'[COD_SAISON]
+			            = (
+			                LEFT ( SELECTEDVALUE ( 'Saison Histoire Typo'[COD_SAISON] ), 1 )
+			                    & RIGHT ( SELECTEDVALUE ( 'Saison Histoire Typo'[COD_SAISON] ), 2 ) - 1
+			            )
+			    )
+		displayFolder: Quantité
+
+	/// Somme de la quantité besoin de la REA
+	measure 'Qte Besoin Reappro' =
+			CALCULATE (
+			    SUM ( V_TD_FA_BESOIN_REFCOMM[QTE_BESOIN] ),
+			    V_TD_FA_BESOIN_REFCOMM[COD_INF_BESOIN] = "REA"
+			)
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// Qte besoin reappro  S-1 en fonction de date selectionnée
+	measure 'Qte Besoin Reappro J-7' = CALCULATE ( [Qte Besoin Reappro], DATEADD ( 'Calendrier'[DAT], -7, DAY ) )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// Quantité besoin reappro N-1 de la date filtrée
+	measure 'Qte Besoin Reappro N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Qte Besoin Reappro],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Qte Besoin Reappro], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		displayFolder: Quantité
+
+	measure 'Qte Cmd Frn UVC' = ```
+			VAR v_1 =
+			    SUM ( 'V_TD_CMD_REC_FRN'[QTE_CMD_FRN] )
+			VAR v_2 =
+			    SUM ( 'V_TD_CMD_REC_FRN'[QTE_CMD_FRN_UVC] )
+			RETURN
+			    IF ( MAX ( 'Nomenclature Produit'[TYP_CUG] ) = "TCO", v_1, v_2 )
+			    
+			
+			```
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Cmd Frn UVC copy' =
+			VAR v_1 =
+			    SUMMARIZE (
+			        'V_TD_CMD_REC_FRN',
+			        'Nomenclature Produit'[COD_CUG],
+			        'Nomenclature Produit'[TYP_CUG]
+			    )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v_1,
+			        "QTE_CMD_FRN@", SUM ( 'V_TD_CMD_REC_FRN'[QTE_CMD_FRN] ),
+			        "QTE_CMD_FRN_UVC@", SUM ( 'V_TD_CMD_REC_FRN'[QTE_CMD_FRN_UVC] )
+			    )
+			VAR v_3 =
+			    ADDCOLUMNS (
+			        v_2,
+			        "check@", IF (  [TYP_CUG]  = "TCO", [QTE_CMD_FRN@], [QTE_CMD_FRN_UVC@] )
+			    )
+			RETURN
+			    SUMX ( v_3, [check@] )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Reception Cmd Frn UVC' =
+			VAR v_1 =
+			    SUM ( 'V_TD_CMD_REC_FRN'[QTE_CMD_FRN_REC] )
+			VAR v_2 =
+			    SUM ( 'V_TD_CMD_REC_FRN'[QTE_CMD_FRN_REC_UVC] )
+			RETURN
+			    IF ( MAX ( 'Nomenclature Produit'[TYP_CUG] ) = "TCO", v_1, v_2 )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent Dispo - Protege Web' = [Qte Stk Ent Dispo UVC RMS] - [Qte Stk Ent Protege Web]
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent Dispo - Protege Web N-1' = [Qte Stk Ent Dispo UVC RMS N-1] - [Qte Stk Ent Protege Web N-1]
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent Dispo UVC CM RMS' = ```
+			VAR v_2 =
+			    MAX ( 'Calendrier'[DAT] )
+			RETURN
+			    CALCULATE (
+			        SUM ( F_STK_ENT_CUG[QTE_STK_ENT_DISPO_ADM_UVC_CM] ),
+			       
+			        'Calendrier'[DAT] = v_2
+			    )
+			```
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent Dispo UVC RMS' = ```
+			VAR v_2 =
+			    MAX ( 'Calendrier'[DAT] )
+			RETURN
+			    CALCULATE (
+			        SUM ( F_STK_ENT_CUG[QTE_STK_ENT_DISPO_ADM_UVC] ),
+			        'Calendrier'[DAT] = v_2   
+			    )
+			```
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent Dispo UVC RMS N-1' = ```
+			VAR v_1 =
+			    CALCULATE (
+			        MAX ( 'Calendrier'[LIB_AN_SEM] ),
+			        
+			        SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] )
+			    )
+			RETURN
+			    CALCULATE ( [Qte Stk Ent Dispo UVC RMS],all(calendrier), 'Calendrier'[LIB_AN_SEM] = v_1 )
+			```
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// qte stk ent dispo ADM UVC CM + si le TYP CUG est CM alors 0 sinon Qte stk Ent dispo ADM UVC
+	measure 'Qte Stk Ent Dispo UVC Vision TCO RMS' =
+			
+			VAR v_ =
+			    VAR v_1 =
+			        MAX ( 'Calendrier'[DAT] )
+			    RETURN
+			        CALCULATE (
+			            SUM ( F_STK_ENT_CUG[QTE_STK_ENT_DISPO_ADM_UVC] ),
+			            'Calendrier'[DAT] = v_1,
+			            'F_STK_ENT_CUG'[TYP_CUG] = "TCO"
+			        )
+			RETURN
+			   [Qte Stk Ent Dispo UVC CM RMS] + v_
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent Dispo UVC Vision TCO RMS N-1' =
+			VAR v_1 =
+			    CALCULATE (
+			        MAX ( 'Calendrier'[LIB_AN_SEM] ),
+			        SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] )
+			    )
+			RETURN
+			    CALCULATE (
+			        [Qte Stk Ent Dispo UVC Vision TCO RMS],
+			        all(calendrier),
+			        'Calendrier'[LIB_AN_SEM] = v_1
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent Phy UVC CM RMS' =
+			var v_1 = max('Calendrier'[DAT])
+			return
+			CALCULATE (
+			        SUM ( F_STK_ENT_CUG[QTE_STK_ENT_PHY_ADM_UVC_CM] ),
+			        'Calendrier'[DAT] = v_1
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// SUM ( F_STK_ENT_CUG[QTE_STK_ENT_PHY_ADM_UVC] )
+	measure 'Qte Stk Ent Phy UVC RMS' =
+			var v_1 = max('Calendrier'[DAT])
+			return
+			CALCULATE (
+			        SUM ( F_STK_ENT_CUG[QTE_STK_ENT_PHY_ADM_UVC] ),
+			         'Calendrier'[DAT] = v_1
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// qte stk ent dispo ADM UVC CM + si le TYP CUG est CM alors 0 sinon Qte stk Ent dispo ADM UVC
+	measure 'Qte Stk Ent Phy UVC Vision TCO RMS' =
+			VAR v_ =
+			    VAR v_1 =
+			        MAX ( 'Calendrier'[DAT] )
+			    RETURN
+			        CALCULATE (
+			            SUM ( F_STK_ENT_CUG[QTE_STK_ENT_PHY_ADM_UVC] ),
+			            'Calendrier'[DAT] = v_1,
+			            'F_STK_ENT_CUG'[TYP_CUG] = "TCO"
+			        )
+			RETURN
+			    [Qte Stk Ent Phy UVC CM RMS] + v_
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// qte stk ent dispo ADM UVC CM + si le TYP CUG est CM alors 0 sinon Qte stk Ent dispo ADM UVC
+	measure 'Qte Stk Ent Phy UVC Vision TCO RMS N-1' =
+			VAR v_1 =
+			    CALCULATE (
+			        MAX ( 'Calendrier'[LIB_AN_SEM] ),
+			        SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] )
+			    )
+			RETURN
+			    CALCULATE (
+			       [Qte Stk Ent Phy UVC Vision TCO RMS] ,
+			       all(calendrier),
+			        'Calendrier'[LIB_AN_SEM] = v_1
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent Protege Web' =
+			VAR v_2 =
+			    MAX ( 'Calendrier'[DAT] )
+			RETURN
+			    CALCULATE (
+			        SUM ( F_STK_ENT_CUG[QTE_STK_ENT_RESERVE_WEB] ),
+			        'Calendrier'[DAT] = v_2
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent Protege Web N-1' =
+			VAR v_1 =
+			    CALCULATE (
+			        MAX ( 'Calendrier'[LIB_AN_SEM] ),
+			        SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] )
+			    )
+			RETURN
+			    CALCULATE ( [Qte Stk Ent Protege Web], all(calendrier),'Calendrier'[LIB_AN_SEM] = v_1 )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent UVC CM InfoLog' =
+			VAR v_2 =
+			    MAX ( 'Calendrier'[DAT] )
+			RETURN
+			    CALCULATE (
+			        SUM ( 'F_STK_ENT_CUG'[QTE_STK_ENT_INFO_LOG_UVC_CM] ),
+			        'Calendrier'[DAT] = v_2
+			    )
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent UVC InfoLog' =
+			VAR v_2 =
+			    MAX ( 'Calendrier'[DAT] )
+			RETURN
+			    CALCULATE (
+			        SUM ( F_STK_ENT_CUG[QTE_STK_ENT_INFO_LOG_UVC] ),
+			        'Calendrier'[DAT] = v_2
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent UVC InfoLog n-1' =
+			VAR v_1 =
+			    CALCULATE (
+			        MAX ( 'Calendrier'[DAT] ),
+			        SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] )
+			    )
+			RETURN
+			    CALCULATE ( [Qte Stk Ent UVC InfoLog], all(calendrier) , 'Calendrier'[DAT] = v_1 )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Ent UVC VIsion TCO InfoLog' =
+			VAR v_1 =
+			    TRIM ( MAX ( 'F_STK_ENT_CUG'[TYP_CUG] ) )
+			RETURN
+			    [Qte Stk Ent UVC CM InfoLog] + IF ( v_1 = "CM", 0, [Qte Stk Ent UVC InfoLog] )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// Somme de la quantité stock magasin et de la quantité stock en cours 
+	measure 'Qte Stk Mag (YC Encours)' = ```
+			 [Qte Stk Theo Mag Stock] + [Qte Stk Theo EnCours Cmd Mag]
+			```
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Mag (YC Encours) N-1' =
+			-- [Qte Stk Theo Mag Stock N-1] + [Qte Stk Theo Encours Cmd Mag N-1]
+			VAR v_1 =
+			    CALCULATE (
+			        MAX ( 'Calendrier'[LIB_AN_SEM] ),
+			        SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] )
+			    )
+			RETURN
+			    CALCULATE ( [Qte Stk Mag (YC Encours)],all(calendrier), 'Calendrier'[LIB_AN_SEM] = v_1 )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// Qte The Transit CMD MAG
+	measure 'Qte Stk Theo EnCours Cmd Mag' =
+			VAR v_2 =
+			    MAX ( 'Calendrier'[LIB_AN_SEM] )
+			RETURN
+			    CALCULATE (
+			        SUM ( F_STK_THE_MAG_CUG[QTE_THE_TRANSIT_CMDMAG] ),
+			        'Calendrier'[LIB_AN_SEM] = v_2
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Theo Encours Cmd Mag N-1' =
+			VAR v_1 =
+			    CALCULATE (
+			        MAX ( 'Calendrier'[LIB_AN_SEM] ),
+			        SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] )
+			    )
+			RETURN
+			    CALCULATE ( [Qte Stk Theo Encours Cmd Mag], all(calendrier),'Calendrier'[LIB_AN_SEM] = v_1 )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Theo Mag Stock' = ```
+			var v_1 = MAX ( 'Calendrier'[DAT] )
+			return
+			CALCULATE (
+			        SUM ( 'F_STK_THE_MAG_CUG'[QTE_STK_THE_MAG_STOCK] ),
+			        'Calendrier'[DAT] = v_1 
+			    )
+			```
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Stk Theo Mag Stock N-1' =
+			VAR v_1 =
+			    CALCULATE (
+			        MAX ( 'Calendrier'[LIB_AN_SEM] ),
+			        SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] )
+			    )
+			RETURN
+			    CALCULATE ( [Qte Stk Theo Mag Stock], all(calendrier),'Calendrier'[LIB_AN_SEM] = v_1 )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// Somme de la quantité stock magasin et de la quantité stock en cours 
+	measure 'Qte Stk Total (Mag + Ent)' = [Qte Stk Mag (YC Encours)] + [Qte Stk Ent Phy UVC Vision TCO RMS]
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// Somme de la quantité stock magasin et de la quantité stock en cours 
+	measure 'Qte Stk Total (Mag + Ent) N-1' = [Qte Stk Mag (YC Encours) N-1] + [Qte Stk Ent Phy UVC Vision TCO RMS N-1]
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Vte' = SUM ( F_VTE_MAG_CUG[QTE_VTE] )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Vte / Ref co ' = DIVIDE ( [Qte Vte], [Nb RC vendues TOUS PAYS] )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Vte / Ref co  N-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Qte Vte / Ref co ],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Qte Vte / Ref co ], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	/// Somme de la Qte Vte jusqu'à la date filtrée
+	measure 'Qte Vte Cumul' =
+			VAR v_1 =
+			    MAX ( 'Calendrier'[DAT] )
+			RETURN
+			    CALCULATE ( [Qte Vte], 'Calendrier'[DAT] <= v_1 )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Vte n-1' =
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 100
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Qte Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Qte Vte], SAMEPERIODLASTYEAR ( 'Calendrier'[DAT] ) )
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Vte n-2' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 200
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Qte Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Qte Vte],   DATEADD ( 'Calendrier'[DAT], -2, YEAR ) )
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Vte n-3' =
+			
+			VAR min_week =
+			    VALUE ( MIN ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			VAR max_week =
+			    VALUE ( MAX ( 'Calendrier'[AN_SEM_CALCUL] ) ) - 300
+			RETURN
+			    IF (
+			        ISFILTERED ( 'Calendrier'[LIB_AN_SEM] )
+			            || ISFILTERED ( 'Calendrier'[AN_SEM_CALCUL] ),
+			        CALCULATE (
+			            [Qte Vte],
+			            ALL ( 'Calendrier' ),
+			            'Calendrier'[AN_SEM_CALCUL] >= min_week,
+			            'Calendrier'[AN_SEM_CALCUL] <= max_week
+			        ),
+			        CALCULATE ( [Qte Vte],   DATEADD ( 'Calendrier'[DAT], -3, YEAR ) )
+			
+			    )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Vte période de co' =
+			VAR v__ =
+			    VALUES ( 'Saison Histoire Typo'[COD_REF_COMM] )
+			VAR v_2 =
+			    ADDCOLUMNS (
+			        v__,
+			        "Qte",
+			            VAR deb =
+			                SELECTEDVALUE ( 'Saison Histoire Typo'[DAT_DEB_HISTOIRE] )
+			            VAR fin =
+			                SELECTEDVALUE ( 'Saison Histoire Typo'[DAT_FIN_HISTOIRE] )
+			            RETURN
+			                CALCULATE (
+			                    [Qte Vte],
+			                    KEEPFILTERS ( Calendrier[DAT] >= deb && Calendrier[DAT] <= fin )
+			                )
+			    )
+			RETURN
+			    SUMX ( v_2, [Qte] )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Vte S-1' =
+			VAR max_saison =
+			    MAX ( 'Saison Histoire Typo'[COD_SAISON] )
+			VAR prev_saison =
+			    CONCATENATE ( LEFT ( max_saison, 1 ), RIGHT ( max_saison, 2 ) - 1 )
+			RETURN
+			    CALCULATE ( [Qte Vte], 'Saison Histoire Typo'[COD_SAISON] = prev_saison )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Vte S-2' =
+			VAR max_saison =
+			    MAX ( 'Saison Histoire Typo'[COD_SAISON] )
+			VAR prev_saison =
+			    CONCATENATE ( LEFT ( max_saison, 1 ), RIGHT ( max_saison, 2 ) - 2 )
+			RETURN
+			    CALCULATE ( [Qte Vte], 'Saison Histoire Typo'[COD_SAISON] = prev_saison )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'Qte Vte S-3' =
+			VAR max_saison =
+			    MAX ( 'Saison Histoire Typo'[COD_SAISON] )
+			VAR prev_saison =
+			    CONCATENATE ( LEFT ( max_saison, 1 ), RIGHT ( max_saison, 2 ) - 3 )
+			RETURN
+			    CALCULATE ( [Qte Vte], 'Saison Histoire Typo'[COD_SAISON] = prev_saison )
+		formatString: #,##0
+		displayFolder: Quantité
+
+	measure 'V_Rot_Entrepôt (Hebdo)' =
+			VAR v_1 =
+			    MAX ( 'Calendrier'[LIB_AN_SEM] )
+			VAR v_2 =
+			    CALCULATE ( [Qte Vte], 'Calendrier'[LIB_AN_SEM]  = v_1 )
+			VAR v_3 = [Qte Stk Ent Phy UVC Vision TCO RMS] + [Qte Stk Mag (YC Encours)]
+			RETURN
+			    DIVIDE ( v_3, v_2 )
+		formatString: #,##0.0
+		displayFolder: Quantité
+
+	measure 'V_Rot_Globale (jr)' =
+			VAR v_1 = [Qte Stk Ent UVC InfoLog] + [Qte Stk Theo Mag Stock]
+			VAR v_2 =
+			    DIVIDE ( [Qte Vte], 14 )
+			RETURN
+			    DIVIDE ( v_1, v_2 )
+		formatString: #,##0.00
+		displayFolder: Quantité
+
+	measure 'V_Rot_Mag (Hebdo)' =
+			VAR v_1 =
+			    MAX ( 'Calendrier'[LIB_AN_SEM])
+			VAR v_2 =
+			    CALCULATE ( [Qte Vte], 'Calendrier'[LIB_AN_SEM] = v_1 )
+			RETURN
+			    DIVIDE ( [Qte Stk Mag (YC Encours)], v_2 )
+		formatString: #,##0.00
+		displayFolder: Quantité
+
+	measure 'V_Rot_Mag (jr)' =
+			
+			VAR v_1=
+			    DIVIDE ( [Qte Vte], 14 )
+			RETURN
+			    DIVIDE ( [Qte Stk Theo Mag Stock], v_1 )
+		formatString: #,##0.00
+		displayFolder: Quantité
+
+	measure 'V_Rot_Magasin (Hebdo) / vtes futures' =
+			VAR v_1 = value(min ('Calendrier'[AN_SEM_CALCUL]) ) + 1
+			VAR v_2 = value(min('Calendrier'[AN_SEM_CALCUL])  ) + 4
+			VAR v_3 =
+			    CALCULATE (
+			       [Qte Vte n-1] ,
+			         all('Calendrier'),
+			        keepfilters('Calendrier'[AN_SEM_CALCUL] >= v_1 &&
+			        'Calendrier'[AN_SEM_CALCUL] <= v_2)
+			    )
+			VAR v_4 =
+			    DIVIDE ( v_3, 4 )
+			RETURN
+			    DIVIDE ( [Qte Stk Mag (YC Encours)], v_4 )
+		formatString: #,##0.0
+		displayFolder: Quantité
+
+	partition Mesures = m
+		source =
+				let
+				    Source = ""
+				in
+				    Source
+

@@ -1,0 +1,82 @@
+table F_ALLOC_MAG_CUG
+
+	column COD_SAISON
+		dataType: string
+		displayFolder: KEYS
+		sourceColumn: COD_SAISON
+
+	column COD_CUG
+		dataType: string
+		displayFolder: KEYS
+		sourceColumn: COD_CUG
+
+	column COD_REF_NOMENC
+		dataType: string
+		displayFolder: KEYS
+		sourceColumn: COD_REF_NOMENC
+
+	column COD_REF_COMM
+		dataType: string
+		displayFolder: KEYS
+		sourceColumn: COD_REF_COMM
+
+	column NUM_AN
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: NUM_AN
+
+	column NUM_SEMAINE
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: NUM_SEMAINE
+
+	column DAT_ALLOUEE
+		dataType: dateTime
+		formatString: Short Date
+		sourceColumn: DAT_ALLOUEE
+
+		annotation Format = <Format Format="DateTimeShortDatePattern" />
+
+	column COD_MAGASIN
+		dataType: string
+		displayFolder: KEYS
+		sourceColumn: COD_MAGASIN
+
+	column LIB_FORMAT_PERF
+		dataType: string
+		sourceColumn: LIB_FORMAT_PERF
+
+	column LIB_FORMAT_TAILLE
+		dataType: string
+		sourceColumn: LIB_FORMAT_TAILLE
+
+	column COD_RAYON
+		dataType: string
+		displayFolder: KEYS
+		sourceColumn: COD_RAYON
+
+	column COD_MAGASIN_RMS
+		dataType: string
+		displayFolder: KEYS
+		sourceColumn: COD_MAGASIN_RMS
+
+	column COD_CUG_SAISON
+		dataType: string
+		displayFolder: KEYS
+		sourceColumn: COD_CUG_SAISON
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				  #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "F_ALLOC_MAG") and [Extension] = ".gz"),
+				   #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true])
+				in
+				    #"Promoted Headers"
+

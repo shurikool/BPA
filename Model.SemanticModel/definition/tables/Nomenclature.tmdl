@@ -1,0 +1,66 @@
+/// Dimension
+table Nomenclature
+
+	column COD_FAMILLE
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_FAMILLE
+
+	column COD_RAYON
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_RAYON
+
+	column COD_REF_NOMENC
+		dataType: int64
+		isKey
+		summarizeBy: none
+		sourceColumn: COD_REF_NOMENC
+
+	column COD_SAISON
+		dataType: string
+		sourceColumn: COD_SAISON
+
+	column COD_SS_RAYON
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_SS_RAYON
+
+	column DAT_CRE_SPOC
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_CRE_SPOC
+
+	column DAT_MOD_SPOC
+		dataType: string
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_MOD_SPOC
+
+	column LIB_FAMILLE
+		dataType: string
+		sourceColumn: LIB_FAMILLE
+
+	column LIB_RAYON
+		dataType: string
+		sourceColumn: LIB_RAYON
+
+	column LIB_SS_RAYON
+		dataType: string
+		sourceColumn: LIB_SS_RAYON
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "D_REF_NOMEN") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Columns=10, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"COD_REF_NOMENC", Int64.Type}, {"COD_SAISON", type text}, {"COD_FAMILLE", Int64.Type}, {"LIB_FAMILLE", type text}, {"COD_SS_RAYON", Int64.Type}, {"LIB_SS_RAYON", type text}, {"COD_RAYON", Int64.Type}, {"LIB_RAYON", type text}, {"DAT_CRE_SPOC", type date}, {"DAT_MOD_SPOC", type text}})
+				in
+				    #"Changed Type"
+

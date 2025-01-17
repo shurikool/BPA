@@ -1,0 +1,16 @@
+cultureInfo en-GB
+	translations
+		model Model
+			table Calendrier
+				caption: Calendrier
+			table 'Nomenclature Produit'
+				caption: Nomenclature Produit
+			table Fournisseur
+				caption: Fournisseur
+			table Magasin
+				caption: Magasin
+			table 'Saison Histoire Typo'
+				caption: Saison Histoire Typo
+			table Nomenclature
+				caption: Nomenclature
+

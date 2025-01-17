@@ -1,0 +1,73 @@
+/// Dimension
+table Magasin
+
+	column COD_CNUDCID
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_CNUDCID
+
+	column COD_ENTREPOT_PAYS
+		dataType: string
+		sourceColumn: COD_ENTREPOT_PAYS
+
+	column COD_MAGASIN
+		dataType: string
+		sourceColumn: COD_MAGASIN
+
+	column COD_MAGASIN_RMS
+		dataType: int64
+		isKey
+		summarizeBy: none
+		sourceColumn: COD_MAGASIN_RMS
+
+	column COD_MAGASIN_TXT
+		dataType: string
+		sourceColumn: COD_MAGASIN_TXT
+
+	column COD_PAYS
+		dataType: string
+		sourceColumn: COD_PAYS
+
+	column DAT_CRE_SPOC
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_CRE_SPOC
+
+	column DAT_MOD_SPOC
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_MOD_SPOC
+
+	column DISTRICT
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: DISTRICT
+
+	column LIB_MAGASIN
+		dataType: string
+		sourceColumn: LIB_MAGASIN
+
+	column LIB_PAYS
+		dataType: string
+		sourceColumn: LIB_PAYS
+
+	column TYP_SITE
+		dataType: string
+		sourceColumn: TYP_SITE
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "D_MAGASIN") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Columns=12, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"COD_MAGASIN", type text}, {"LIB_MAGASIN", type text}, {"COD_MAGASIN_TXT", type text}, {"COD_PAYS", type text}, {"LIB_PAYS", type text}, {"COD_ENTREPOT_PAYS", type text}, {"TYP_SITE", type text}, {"DAT_CRE_SPOC", type date}, {"DAT_MOD_SPOC", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CNUDCID", Int64.Type}, {"DISTRICT", Int64.Type}})
+				in
+				    #"Changed Type"
+
