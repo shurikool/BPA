@@ -1,0 +1,107 @@
+/// Dimension
+table 'Nomenclature Produit'
+
+	column COD_ARTICLE
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_ARTICLE
+
+	column COD_CODIFICATION
+		dataType: string
+		sourceColumn: COD_CODIFICATION
+
+	column COD_RCT_TXT
+		dataType: string
+		sourceColumn: COD_RCT_TXT
+
+	column COD_RC_TXT
+		dataType: string
+		sourceColumn: COD_RC_TXT
+
+	column COD_REF_NOMENC
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_REF_NOMENC
+
+	column COD_REF_TXT
+		dataType: string
+		sourceColumn: COD_REF_TXT
+
+	column DAT_ARR
+		dataType: string
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_ARR
+
+	column DAT_CRE_SPOC
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_CRE_SPOC
+
+	column DAT_MOD_SPOC
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_MOD_SPOC
+
+	column LIB_ART_COURT
+		dataType: string
+		sourceColumn: LIB_ART_COURT
+
+	column LIB_ART_LONG1
+		dataType: string
+		sourceColumn: LIB_ART_LONG1
+
+	column LIB_COULEUR
+		dataType: string
+		sourceColumn: LIB_COULEUR
+
+	column LIB_CUG_COURT
+		dataType: string
+		sourceColumn: LIB_CUG_COURT
+
+	column LIB_CUG_LONG1
+		dataType: string
+		sourceColumn: LIB_CUG_LONG1
+
+	column LIB_TAILLE
+		dataType: string
+		sourceColumn: LIB_TAILLE
+
+	column TYP_CUG
+		dataType: string
+		sourceColumn: TYP_CUG
+
+	column COD_CUG_SAISON
+		dataType: string
+		isKey
+		sourceColumn: COD_CUG_SAISON
+
+	column COD_CUG
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_CUG
+
+	column COD_SAISON
+		dataType: string
+		sourceColumn: COD_SAISON
+
+	partition Partition = m
+		dataView: full
+		source = ```
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "D_CUG_SAISON") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Columns=22, Encoding=1252, QuoteStyle=QuoteStyle.None, CsvStyle = CsvStyle.QuoteAfterDelimiter]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Lignes filtrées" = Table.SelectRows(#"Promoted Headers", each [COD_SAISON] <> null and [COD_SAISON] <> ""),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Lignes filtrées",{{"COD_CUG", Int64.Type}, {"COD_SAISON", type text}, {"COD_REF_NOMENC", Int64.Type}, {"COD_ARTICLE", Int64.Type}, {"COD_REF_TXT", type text}, {"COD_RC_TXT", type text}, {"COD_RCT_TXT", type text}, {"COD_CODIFICATION", type text}, {"TYP_CUG", type text}, {"LIB_TAILLE", type text}, {"LIB_COULEUR", type text}, {"LIB_COULEUR_TXT", type text}, {"LIB_ART_COURT", type text}, {"LIB_ART_LONG1", type text}, {"LIB_ART_LONG2", type text}, {"LIB_ART_LONG3", type text}, {"DAT_CRE_SPOC", type date}, {"DAT_MOD_SPOC", type date}, {"LIB_CUG_COURT", type text}, {"LIB_CUG_LONG1", type text}, {"DAT_ARR", type text}, {"COD_CUG_SAISON", type text}}),
+				    #"Doublons supprimés" = Table.Distinct(#"Changed Type", {"COD_CUG_SAISON"}),
+				    #"Colonnes supprimées" = Table.RemoveColumns(#"Doublons supprimés",{"LIB_ART_LONG2", "LIB_ART_LONG3", "LIB_COULEUR_TXT"})
+				    
+				in
+				    #"Colonnes supprimées"
+				```
+

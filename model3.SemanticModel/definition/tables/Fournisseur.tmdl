@@ -1,0 +1,53 @@
+/// Dimension
+table Fournisseur
+
+	column COD_FRN
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: COD_FRN
+
+	column COD_FRN_CNUF_CIF
+		dataType: int64
+		isKey
+		summarizeBy: none
+		sourceColumn: COD_FRN_CNUF_CIF
+
+	column DAT_CRE_SPOC
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_CRE_SPOC
+
+	column DAT_MOD_SPOC
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_MOD_SPOC
+
+	column FLG_ENT_INTER
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: FLG_ENT_INTER
+
+	column LIB_PAYS_FRN
+		dataType: string
+		sourceColumn: LIB_PAYS_FRN
+
+	column LIB_RAISON_SOC
+		dataType: string
+		sourceColumn: LIB_RAISON_SOC
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "D_FOURNISSEUR") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"COD_FRN_CNUF_CIF", Int64.Type}, {"LIB_RAISON_SOC", type text}, {"LIB_PAYS_FRN", type text}, {"DAT_CRE_SPOC", type date}, {"DAT_MOD_SPOC", type date}, {"COD_FRN", Int64.Type}, {"FLG_ENT_INTER", Int64.Type}})
+				in
+				    #"Changed Type"
+

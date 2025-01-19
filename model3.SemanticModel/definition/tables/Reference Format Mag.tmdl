@@ -1,0 +1,53 @@
+table 'Reference Format Mag'
+
+	column COD_MAGASIN
+		dataType: string
+		sourceColumn: COD_MAGASIN
+
+	column COD_REF_COMM
+		dataType: string
+		sourceColumn: COD_REF_COMM
+
+	column COD_REF_NOMENC
+		dataType: string
+		sourceColumn: COD_REF_NOMENC
+
+	column LIB_FORMAT_PERF
+		dataType: string
+		sourceColumn: LIB_FORMAT_PERF
+
+	column LIB_FORMAT_TAILLE
+		dataType: string
+		sourceColumn: LIB_FORMAT_TAILLE
+
+	column DAT_ENTREE_VIGUEUR
+		dataType: string
+		sourceColumn: DAT_ENTREE_VIGUEUR
+
+	column COD_SAISON
+		dataType: string
+		sourceColumn: COD_SAISON
+
+	column COD_RAYON
+		dataType: string
+		sourceColumn: COD_RAYON
+
+	column COD_MAGASIN_RMS
+		dataType: string
+		sourceColumn: COD_MAGASIN_RMS
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				  #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "D_REF_FORMAT_MAG") and [Extension] = ".gz"),
+				   #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true])
+				in
+				    #"Promoted Headers"
+

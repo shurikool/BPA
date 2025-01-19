@@ -1,0 +1,17 @@
+dataSource AzureBlobs
+	connectionDetails =
+			{
+			  "authentication": null,
+			  "query": null
+			}
+		protocol: azure-blobs
+		address
+			domain: blob.core.windows.net
+			account: dpfstormyb001
+	credential =
+			{
+			  "kind": "AzureBlobs",
+			  "path": "https://dpfstormyb001.blob.core.windows.net/"
+			}
+		authenticationKind: Key
+

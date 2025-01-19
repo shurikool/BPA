@@ -1,0 +1,60 @@
+table V_TD_FA_BESOIN_REFCOMM
+	isHidden
+
+	column COD_INF_BESOIN
+		dataType: string
+		sourceColumn: COD_INF_BESOIN
+
+	column DAT_BESOIN
+		dataType: dateTime
+		sourceColumn: DAT_BESOIN
+
+	column DAT_CALCUL_BESOIN
+		dataType: dateTime
+		sourceColumn: DAT_CALCUL_BESOIN
+
+	column QTE_BESOIN
+		dataType: int64
+		isAvailableInMdx: false
+		sourceColumn: QTE_BESOIN
+
+	column DAT_BESOIN_LIV_PROP
+		dataType: string
+		sourceColumn: DAT_BESOIN_LIV_PROP
+
+	column DAT
+		dataType: dateTime
+		sourceColumn: DAT
+
+	column COD_REF_COMM
+		dataType: int64
+		sourceColumn: COD_REF_COMM
+
+	column COD_CUG_SAISON
+		dataType: string
+		sourceColumn: COD_CUG_SAISON
+
+	column COD_MAGASIN_RMS
+		dataType: string
+		sourceColumn: COD_MAGASIN_RMS
+
+	column COD_REF_NOMENC
+		dataType: string
+		sourceColumn: COD_REF_NOMENC
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				     #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "SPOCPBI_V_TD_FA_BESOIN_REFCOMM") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"Imported CSV" = Csv.Document(Decompress,[Delimiter="|", Columns=10, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"En-têtes promus" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"COD_INF_BESOIN", type text}, {"DAT_BESOIN", type date}, {"DAT_CALCUL_BESOIN", type date}, {"DAT", type date}, {"QTE_BESOIN", Int64.Type}, {"DAT_BESOIN_LIV_PROP", type text}, {"COD_REF_COMM", Int64.Type}, {"COD_CUG_SAISON", type text}})
+				in
+				    #"Type modifié"
+

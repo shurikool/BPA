@@ -1,0 +1,323 @@
+table V_TD_CMD_REC_FRN
+	isHidden
+
+	column NUM_CMD_FRN
+		dataType: int64
+		sourceColumn: NUM_CMD_FRN
+
+	column COD_REF_NOMENC
+		dataType: int64
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_REF_NOMENC
+
+	column COD_REF_COMM
+		dataType: int64
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_REF_COMM
+
+	column DAT_CMD_FRN_IMPL_PROB
+		dataType: dateTime
+		sourceColumn: DAT_CMD_FRN_IMPL_PROB
+
+	column PRX_ACH_CENTRALE_EUR
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: PRX_ACH_CENTRALE_EUR
+
+	column PRX_REVIENT_EUR
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: PRX_REVIENT_EUR
+
+	column PRX_CESSION_MAG_EUR
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: PRX_CESSION_MAG_EUR
+
+	column PRX_PMD_HT_EUR
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: PRX_PMD_HT_EUR
+
+	column PRX_VTE_CAT_TTC_DEV
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: PRX_VTE_CAT_TTC_DEV
+
+	column TAU_TVA
+		dataType: int64
+		sourceColumn: TAU_TVA
+
+	column MNT_QTE_CMD_FRN_PRX_ACH_CENTRA
+		dataType: int64
+		isAvailableInMdx: false
+		sourceColumn: MNT_QTE_CMD_FRN_PRX_ACH_CENTRA
+
+	column MNT_QTE_CMD_FRN_PRX_REVIENT_EU
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: MNT_QTE_CMD_FRN_PRX_REVIENT_EU
+
+	column MNT_QTE_CMD_FRN_PRX_PMD_HT_EUR
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: MNT_QTE_CMD_FRN_PRX_PMD_HT_EUR
+
+	column MNT_QTE_CMD_FRN_PRX_CESSION_MA
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: MNT_QTE_CMD_FRN_PRX_CESSION_MA
+
+	column MNT_QTE_CMD_FRN_PRX_VTE_CAT_TT
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: MNT_QTE_CMD_FRN_PRX_VTE_CAT_TT
+
+	column QTE_CMD_FRN
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: QTE_CMD_FRN
+
+	column QTE_CMD_FRN_UVC
+		dataType: int64
+		isAvailableInMdx: false
+		sourceColumn: QTE_CMD_FRN_UVC
+
+	column DAT_REC_FRN_THEO
+		dataType: dateTime
+		sourceColumn: DAT_REC_FRN_THEO
+
+	column DAT_REC_FRN_REEL
+		dataType: dateTime
+		sourceColumn: DAT_REC_FRN_REEL
+
+	column DATHEU_REC_FRN_REEL
+		dataType: dateTime
+		sourceColumn: DATHEU_REC_FRN_REEL
+
+	column DAT_REC_FRN_PLANIFIE
+		dataType: dateTime
+		sourceColumn: DAT_REC_FRN_PLANIFIE
+
+	column DATHEU_REC_FRN_PLANIFIE
+		dataType: dateTime
+		sourceColumn: DATHEU_REC_FRN_PLANIFIE
+
+	column PDS_CMD_FRN
+		dataType: double
+		sourceColumn: PDS_CMD_FRN
+
+	column VOL_CMD_FRN
+		dataType: double
+		sourceColumn: VOL_CMD_FRN
+
+	column QTE_CMD_FRN_REC
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: QTE_CMD_FRN_REC
+
+	column QTE_CMD_FRN_REC_UVC
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: QTE_CMD_FRN_REC_UVC
+
+	column QTE_CMD_FRN_RELIQUAT
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: QTE_CMD_FRN_RELIQUAT
+
+	column QTE_CMD_FRN_RELIQUAT_UVC
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: QTE_CMD_FRN_RELIQUAT_UVC
+
+	column SPACE_NB
+		dataType: double
+		sourceColumn: SPACE_NB
+
+	column TRANSPORT_MODE
+		dataType: string
+		sourceColumn: TRANSPORT_MODE
+
+	column DAT_LID
+		dataType: dateTime
+		sourceColumn: DAT_LID
+
+	column DAT_LRD_INI
+		dataType: dateTime
+		sourceColumn: DAT_LRD_INI
+
+	column DAT_LRD_UPD
+		dataType: dateTime
+		sourceColumn: DAT_LRD_UPD
+
+	column DAT_MDD_UPD
+		dataType: dateTime
+		sourceColumn: DAT_MDD_UPD
+
+	column DAT_FIRST_SHIP
+		dataType: dateTime
+		sourceColumn: DAT_FIRST_SHIP
+
+	column DAT_FIRST_ETA_UPD
+		dataType: dateTime
+		sourceColumn: DAT_FIRST_ETA_UPD
+
+	column DAT_FIRST_APP
+		dataType: dateTime
+		sourceColumn: DAT_FIRST_APP
+
+	column DAT_FIRST_CUSTOMS
+		dataType: dateTime
+		sourceColumn: DAT_FIRST_CUSTOMS
+
+	column TAU_DEV_VERS_EUR
+		dataType: int64
+		sourceColumn: TAU_DEV_VERS_EUR
+
+	column MODE_PMT
+		dataType: string
+		sourceColumn: MODE_PMT
+
+	column INCOTERM_ACH
+		dataType: string
+		sourceColumn: INCOTERM_ACH
+
+	column INCOTERM_VTE
+		dataType: string
+		sourceColumn: INCOTERM_VTE
+
+	column NUM_CMD_CLI
+		dataType: string
+		sourceColumn: NUM_CMD_CLI
+
+	column AAT
+		dataType: int64
+		sourceColumn: AAT
+
+	column COD_WH_PHY
+		dataType: int64
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_WH_PHY
+
+	column COD_PAYS_IMPORT
+		dataType: string
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_PAYS_IMPORT
+
+	column COD_PAYS_ORIGIN
+		dataType: string
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_PAYS_ORIGIN
+
+	column FLG_REASSORT
+		dataType: string
+		sourceColumn: FLG_REASSORT
+
+	column FLG_ACTUA
+		dataType: string
+		sourceColumn: FLG_ACTUA
+
+	column TYP_CMF_PER
+		dataType: string
+		sourceColumn: TYP_CMF_PER
+
+	column DEVISE_CMF
+		dataType: string
+		sourceColumn: DEVISE_CMF
+
+	column TX_CONV_DEVISE_CMF_DEVISE_RMS
+		dataType: double
+		sourceColumn: TX_CONV_DEVISE_CMF_DEVISE_RMS
+
+	column PRX_ACH_CENTRALE_DEVISE_CMF
+		dataType: double
+		isAvailableInMdx: false
+		sourceColumn: PRX_ACH_CENTRALE_DEVISE_CMF
+
+	column DAT_LID_INI
+		dataType: dateTime
+		sourceColumn: DAT_LID_INI
+
+	column DAT_LID_REV
+		dataType: dateTime
+		sourceColumn: DAT_LID_REV
+
+	column MOTIF_LID
+		dataType: string
+		sourceColumn: MOTIF_LID
+
+	column DAT_LRD_INI_CMD_FRN
+		dataType: dateTime
+		sourceColumn: DAT_LRD_INI_CMD_FRN
+
+	column DAT_LRD_REV
+		dataType: dateTime
+		sourceColumn: DAT_LRD_REV
+
+	column MOTIF_LRD
+		dataType: string
+		sourceColumn: MOTIF_LRD
+
+	column DAT_MDD_INI
+		dataType: dateTime
+		sourceColumn: DAT_MDD_INI
+
+	column DAT_MDD_REV
+		dataType: dateTime
+		sourceColumn: DAT_MDD_REV
+
+	column MOTIF_MDD
+		dataType: string
+		sourceColumn: MOTIF_MDD
+
+	column DAT_MDD_IMPORT_INI
+		dataType: string
+		sourceColumn: DAT_MDD_IMPORT_INI
+
+	column DAT_MDD_IMPORT_REV
+		dataType: string
+		sourceColumn: DAT_MDD_IMPORT_REV
+
+	column MOTIF_MDD_IMPORT
+		dataType: string
+		sourceColumn: MOTIF_MDD_IMPORT
+
+	column RID
+		dataType: dateTime
+		sourceColumn: RID
+
+	column NUM_CONTAINER
+		dataType: string
+		sourceColumn: NUM_CONTAINER
+
+	column COD_CUG_SAISON
+		dataType: string
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_CUG_SAISON
+
+	partition Partition = m
+		dataView: full
+		source =
+				let
+				    Source = #"AzureBlobs",
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Folder Filter" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/Oneshot") and Text.Contains([Name], "V_TD_CMD_REC_FRN") and [Extension] = ".gz"),
+				    #"Sorted Rows" = Table.Sort(#"Folder Filter",{{"Date modified", Order.Descending}}),
+				    FILE = #"Sorted Rows"{0}[Content],
+				    Decompress = Binary.Decompress(FILE, Compression.GZip),
+				    #"CSV importé" = Csv.Document(Decompress,[Delimiter="|", Columns=69, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"En-têtes promus" = Table.PromoteHeaders(#"CSV importé", [PromoteAllScalars=true]),
+				    #"Colonnes supprimées" = Table.RemoveColumns(#"En-têtes promus",{""}),
+				    #"Type modifié" = Table.TransformColumnTypes(#"Colonnes supprimées",{{"NUM_CMD_FRN", Int64.Type},{"COD_REF_NOMENC", Int64.Type},  {"COD_REF_COMM", Int64.Type}, {"DAT_CMD_FRN_IMPL_PROB", type date}, {"PRX_ACH_CENTRALE_EUR", type number}, {"PRX_REVIENT_EUR", type number}, {"PRX_CESSION_MAG_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"MNT_QTE_CMD_FRN_PRX_ACH_CENTRA", type text}, {"MNT_QTE_CMD_FRN_PRX_REVIENT_EU", type text}, {"MNT_QTE_CMD_FRN_PRX_PMD_HT_EUR", type text}, {"MNT_QTE_CMD_FRN_PRX_CESSION_MA", type text}, {"MNT_QTE_CMD_FRN_PRX_VTE_CAT_TT", type text}, {"QTE_CMD_FRN", Int64.Type}, {"QTE_CMD_FRN_UVC", Int64.Type}, {"DAT_REC_FRN_THEO", type date}, {"DAT_REC_FRN_REEL", type date}, {"DATHEU_REC_FRN_REEL", type date}, {"DAT_REC_FRN_PLANIFIE", type date}, {"DATHEU_REC_FRN_PLANIFIE", type date}, {"PDS_CMD_FRN", type number}, {"VOL_CMD_FRN", type number}, {"QTE_CMD_FRN_REC", Int64.Type}, {"QTE_CMD_FRN_REC_UVC", Int64.Type}, {"QTE_CMD_FRN_RELIQUAT", Int64.Type}, {"QTE_CMD_FRN_RELIQUAT_UVC", Int64.Type}, {"SPACE_NB", Int64.Type}, {"TRANSPORT_MODE", type text}, {"DAT_LID", type date}, {"DAT_LRD_INI", type date}, {"DAT_LRD_UPD", type date}, {"DAT_MDD_UPD", type date}, {"DAT_FIRST_SHIP", type date}, {"DAT_FIRST_ETA_UPD", type date}, {"DAT_FIRST_APP", type date}, {"DAT_FIRST_CUSTOMS", type date}, {"TAU_DEV_VERS_EUR", Int64.Type}, {"MODE_PMT", type text}, {"INCOTERM_ACH", type text}, {"INCOTERM_VTE", type text}, {"NUM_CMD_CLI", type text}, {"AAT", Int64.Type}, {"COD_WH_PHY", Int64.Type}, {"COD_PAYS_IMPORT", type text}, {"COD_PAYS_ORIGIN", type text}, {"FLG_REASSORT", type text}, {"FLG_ACTUA", type text}, {"TYP_CMF_PER", type text}, {"DEVISE_CMF", type text}, {"TX_CONV_DEVISE_CMF_DEVISE_RMS", type number}, {"PRX_ACH_CENTRALE_DEVISE_CMF", type number}, {"DAT_LID_INI", type date}, {"DAT_LID_REV", type date}, {"MOTIF_LID", type text}, {"DAT_LRD_INI_CMD_FRN", type date}, {"DAT_LRD_REV", type date}, {"MOTIF_LRD", type text}, {"DAT_MDD_INI", type date}, {"DAT_MDD_REV", type date}, {"MOTIF_MDD", type text}, {"DAT_MDD_IMPORT_INI", type text}, {"DAT_MDD_IMPORT_REV", type text}, {"MOTIF_MDD_IMPORT", type text}, {"RID", type date}, {"NUM_CONTAINER", type text}}),
+				    #"Lignes filtrées" = Table.SelectRows(#"Type modifié", each true),
+				    #"Type modifié1" = Table.TransformColumnTypes(#"Lignes filtrées",{{"MNT_QTE_CMD_FRN_PRX_ACH_CENTRA", Int64.Type}, {"MNT_QTE_CMD_FRN_PRX_REVIENT_EU", type number}, {"MNT_QTE_CMD_FRN_PRX_PMD_HT_EUR", type number}, {"MNT_QTE_CMD_FRN_PRX_CESSION_MA", type number}, {"MNT_QTE_CMD_FRN_PRX_VTE_CAT_TT", type number}, {"QTE_CMD_FRN", type number}, {"QTE_CMD_FRN_REC", type number}, {"QTE_CMD_FRN_REC_UVC", type number}, {"QTE_CMD_FRN_RELIQUAT", type number}, {"QTE_CMD_FRN_RELIQUAT_UVC", type number}, {"SPACE_NB", type number}})
+				in
+				    #"Type modifié1"
+

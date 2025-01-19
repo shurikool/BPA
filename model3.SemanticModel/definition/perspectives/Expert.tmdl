@@ -1,0 +1,708 @@
+perspective Expert
+
+	perspectiveTable Calendrier
+
+		perspectiveColumn DAT
+
+		perspectiveColumn DAT_N1
+
+		perspectiveColumn LIB_AN_MOIS
+
+		perspectiveColumn LIB_AN_SEM
+
+		perspectiveColumn LIB_JOUR
+
+		perspectiveColumn LIB_MOIS
+
+		perspectiveColumn NUM_AN
+
+		perspectiveColumn NUM_JOUR
+
+		perspectiveColumn NUM_MOIS
+
+		perspectiveColumn NUM_SEMAINE
+
+	perspectiveTable 'Nomenclature Produit'
+
+		perspectiveColumn COD_ARTICLE
+
+		perspectiveColumn COD_CODIFICATION
+
+		perspectiveColumn COD_RCT_TXT
+
+		perspectiveColumn COD_RC_TXT
+
+		perspectiveColumn COD_REF_NOMENC
+
+		perspectiveColumn COD_REF_TXT
+
+		perspectiveColumn DAT_ARR
+
+		perspectiveColumn DAT_CRE_SPOC
+
+		perspectiveColumn DAT_MOD_SPOC
+
+		perspectiveColumn LIB_ART_COURT
+
+		perspectiveColumn LIB_ART_LONG1
+
+		perspectiveColumn LIB_COULEUR
+
+		perspectiveColumn LIB_CUG_COURT
+
+		perspectiveColumn LIB_CUG_LONG1
+
+		perspectiveColumn LIB_TAILLE
+
+		perspectiveColumn TYP_CUG
+
+		perspectiveColumn COD_CUG_SAISON
+
+		perspectiveColumn COD_CUG
+
+		perspectiveColumn COD_SAISON
+
+	perspectiveTable Fournisseur
+
+		perspectiveColumn COD_FRN
+
+		perspectiveColumn COD_FRN_CNUF_CIF
+
+		perspectiveColumn DAT_CRE_SPOC
+
+		perspectiveColumn DAT_MOD_SPOC
+
+		perspectiveColumn FLG_ENT_INTER
+
+		perspectiveColumn LIB_PAYS_FRN
+
+		perspectiveColumn LIB_RAISON_SOC
+
+	perspectiveTable Magasin
+
+		perspectiveColumn COD_CNUDCID
+
+		perspectiveColumn COD_ENTREPOT_PAYS
+
+		perspectiveColumn COD_MAGASIN
+
+		perspectiveColumn COD_MAGASIN_RMS
+
+		perspectiveColumn COD_MAGASIN_TXT
+
+		perspectiveColumn COD_PAYS
+
+		perspectiveColumn DAT_CRE_SPOC
+
+		perspectiveColumn DAT_MOD_SPOC
+
+		perspectiveColumn DISTRICT
+
+		perspectiveColumn LIB_MAGASIN
+
+		perspectiveColumn LIB_PAYS
+
+		perspectiveColumn TYP_SITE
+
+	perspectiveTable 'Saison Histoire Typo'
+
+		perspectiveColumn COD_HISTOIRE
+
+		perspectiveColumn COD_PERIODE
+
+		perspectiveColumn COD_RAYON
+
+		perspectiveColumn COD_REF_COMM
+
+		perspectiveColumn COD_SAISON
+
+		perspectiveColumn DAT_CRE_SPOC
+
+		perspectiveColumn DAT_DEB_HISTOIRE
+
+		perspectiveColumn DAT_DEB_PERIODE
+
+		perspectiveColumn DAT_FIN_HISTOIRE
+
+		perspectiveColumn DAT_FIN_PERIODE
+
+		perspectiveColumn DAT_MOD_SPOC
+
+		perspectiveColumn LIB_HISTOIRE
+
+		perspectiveColumn LIB_PERIODE
+
+		perspectiveColumn LIB_SS_TYP_HIST
+
+		perspectiveColumn LIB_TYP_HISTOIRE
+
+		perspectiveColumn TYPOLOGY
+
+		perspectiveColumn COD_SAISON-1
+
+	perspectiveTable Nomenclature
+
+		perspectiveColumn COD_FAMILLE
+
+		perspectiveColumn COD_RAYON
+
+		perspectiveColumn COD_REF_NOMENC
+
+		perspectiveColumn COD_SAISON
+
+		perspectiveColumn COD_SS_RAYON
+
+		perspectiveColumn DAT_CRE_SPOC
+
+		perspectiveColumn DAT_MOD_SPOC
+
+		perspectiveColumn LIB_FAMILLE
+
+		perspectiveColumn LIB_RAYON
+
+		perspectiveColumn LIB_SS_RAYON
+
+	perspectiveTable _Mesures
+
+		perspectiveMeasure 'Nb Photos stock'
+
+		perspectiveMeasure 'CA TTC Vte'
+
+		perspectiveMeasure 'Mt Stk Ent Px VTE TTC Jour'
+
+		perspectiveMeasure 'Mt Stk Ent PCM HT'
+
+		perspectiveMeasure 'Mt Stk Ent PMD HT Jour'
+
+		perspectiveMeasure 'Nb Mag Vendeurs TOTAL'
+
+		perspectiveMeasure 'Mt Px Vte Catalogue TTC'
+
+		perspectiveMeasure 'Mt Marge Vte'
+
+		perspectiveMeasure 'Nb Colis Stk Ent Jour'
+
+		perspectiveMeasure 'Nb Colis Dispo Stk Ent Jour'
+
+		perspectiveMeasure 'PMD Stk moyen'
+
+		perspectiveMeasure 'PCM Stk moyen'
+
+		perspectiveMeasure 'PVM Stk Ent'
+
+		perspectiveMeasure 'Nb UVC Par CM'
+
+		perspectiveMeasure 'Nb RCT Livré Sans Stk Ent'
+
+		perspectiveMeasure 'Nb RCT Livré'
+
+		perspectiveMeasure 'Taux Rupture Entrepot Pays'
+
+		perspectiveMeasure RECU
+
+		perspectiveMeasure 'Rupture Achat'
+
+		perspectiveMeasure 'Rupture Appro'
+
+		perspectiveMeasure 'Rupture Mag'
+
+		perspectiveMeasure Total_LIV
+
+		perspectiveMeasure 'Evol Qte Vte N/N-1'
+
+		perspectiveMeasure 'Evol Qte Stk Ent UVC InfoLog'
+
+		perspectiveMeasure 'Nb RC Avec Stk Mag'
+
+		perspectiveMeasure 'Nb RC Vendues et avec Stk Mag'
+
+		perspectiveMeasure 'Taux de mise en vente'
+
+		perspectiveMeasure 'Var Zone'
+
+		perspectiveMeasure '_adefinir 2'
+
+		perspectiveMeasure 'Rot (jr)'
+
+		perspectiveMeasure 'CA TTC Vte N-1'
+
+		perspectiveMeasure 'Evol Qte Besoin reappro J-7'
+
+		perspectiveMeasure 'Rotation Mag'
+
+		perspectiveMeasure '% reappro'
+
+		perspectiveMeasure '% reappro N-1'
+
+		perspectiveMeasure 'Evol CA TTC Vte N/N-1'
+
+		perspectiveMeasure 'CA TTC Vte N-2'
+
+		perspectiveMeasure 'CA TTC Vte N-3'
+
+		perspectiveMeasure 'Evol CA TTC Vte N/N-2'
+
+		perspectiveMeasure 'Evol CA TTC Vte N/N-3'
+
+		perspectiveMeasure 'CA HT Vte'
+
+		perspectiveMeasure 'CA HT Vte N-1'
+
+		perspectiveMeasure 'CA HT Vte N-2'
+
+		perspectiveMeasure 'CA HT Vte N-3'
+
+		perspectiveMeasure 'Evol CA HT Vte N/N-1'
+
+		perspectiveMeasure 'Evol CA HT Vte N/N-2'
+
+		perspectiveMeasure 'Evol CA HT Vte N/N-3'
+
+		perspectiveMeasure 'Mt Px Vte Catalogue TTC N-1'
+
+		perspectiveMeasure 'Evol DMK'
+
+		perspectiveMeasure 'Mt Marge Vte N-1'
+
+		perspectiveMeasure 'Mt Stk Ent PCM HT N-1'
+
+		perspectiveMeasure 'Evol Qte Stk Theo Mag Stock'
+
+		perspectiveMeasure 'PVM Stk Ent N-1'
+
+		perspectiveMeasure 'Evol PVM Stk Ent'
+
+		perspectiveMeasure 'PVM Stk Ent N-2'
+
+		perspectiveMeasure 'Evol PVM Stk Ent N-1'
+
+		perspectiveMeasure 'Taux de DMK N'
+
+		perspectiveMeasure 'Taux de DMK N-1'
+
+		perspectiveMeasure 'Evol Taux De Marge N/N-1'
+
+		perspectiveMeasure 'Taux de Marge'
+
+		perspectiveMeasure 'Taux de Marge N-1'
+
+		perspectiveMeasure 'Evol Qte Stk Ent Dispo UVC RMS'
+
+		perspectiveMeasure 'Evol Qte Stk Ent Dispo UVC Vision TCO RMS'
+
+		perspectiveMeasure 'Evol Qte Stk Theo EnCours Cmd Mag'
+
+		perspectiveMeasure 'Evol Qte Stk Mag (YC Encours)'
+
+		perspectiveMeasure 'Mt PCM HT'
+
+		perspectiveMeasure 'Mt PMD HT'
+
+		perspectiveMeasure 'Prx PMD HT'
+
+		perspectiveMeasure 'Prx PCM HT'
+
+		perspectiveMeasure 'Evol PV Caisse N/N-1'
+
+		perspectiveMeasure 'Evol PV Caisse N/N-2'
+
+		perspectiveMeasure 'Mt PCM HT N-1'
+
+		perspectiveMeasure 'Prx Vte CAT TTC'
+
+		perspectiveMeasure 'Prx Vte CAT TTC Fr'
+
+		perspectiveMeasure 'Degrade N'
+
+		perspectiveMeasure 'Ecart val CA TTC N / N-1'
+
+		perspectiveMeasure 'Degrade N-1'
+
+		perspectiveMeasure 'Evol Dégrad'
+
+		perspectiveMeasure 'Evol Marge Vte N/N-1'
+
+		perspectiveMeasure 'Nb RC vendues TOUS PAYS'
+
+		perspectiveMeasure 'Nb Ref Vendues'
+
+		perspectiveMeasure 'Nb Ref Vendues N-1'
+
+		perspectiveMeasure 'Nb RC Vendues N-1 TOUS PAYS'
+
+		perspectiveMeasure 'Evol Nb RC Vendues TOUS PAYS'
+
+		perspectiveMeasure 'Evol Nb Ref Vendues'
+
+		perspectiveMeasure 'CA TTC / Ref co'
+
+		perspectiveMeasure 'Mt Marge Vte / Ref co'
+
+		perspectiveMeasure 'Reste à recevoir'
+
+		perspectiveMeasure 'Ecoul Mag'
+
+		perspectiveMeasure 'Ecoul Total Sans RAR'
+
+		perspectiveMeasure 'Ecoul Total Avec RAR'
+
+		perspectiveMeasure 'Nb Sem avec Vtes TOTAL'
+
+		perspectiveMeasure 'PCB Colis Mixte'
+
+		perspectiveMeasure 'Déf hebdo / Nb Mag Vendeurs'
+
+		perspectiveMeasure 'Sem début Histoire'
+
+		perspectiveMeasure 'Sem fin Histoire'
+
+		perspectiveMeasure 'Nb RCT Avec Dispo UVC TCO'
+
+		perspectiveMeasure 'Nb RCT'
+
+		perspectiveMeasure 'Taux Rupture Entrepot'
+
+		perspectiveMeasure 'CA TTC N  période de co'
+
+		perspectiveMeasure 'Nb Mag Détenteurs TOTAL'
+
+		perspectiveMeasure 'Déf /Nb Mag Détenteurs '
+
+		perspectiveMeasure 'Nb Sem avec Vtes Période de co'
+
+		perspectiveMeasure 'Var Histoire en cours'
+
+		perspectiveMeasure 'Déf Periode de co / Nb Mag Détenteurs '
+
+		perspectiveMeasure 'Mnt Stk mag Valo PV'
+
+		perspectiveMeasure 'Mt Px Vte Catalogue TTC Fr'
+
+		perspectiveMeasure 'Mt Px Vte Catalogue TTC Fr N-1'
+
+		perspectiveMeasure 'Nb RC vendues pays'
+
+		perspectiveMeasure 'Nb Mag Détenteurs (vision pays/sem)'
+
+		perspectiveMeasure 'Nb Mag Vendeurs (vision pays/sem)'
+
+		perspectiveMeasure 'Nb Sem avec Vtes (vision pays/sem)'
+
+		perspectiveMeasure 'Nb Sem avec Vtes Période de co (vision pays/sem)'
+
+		perspectiveMeasure 'Nb RC Livrées Mag'
+
+		perspectiveMeasure 'CA TTC / Ref co N-1'
+
+		perspectiveMeasure 'Ecoul Mag N-1'
+
+		perspectiveMeasure 'Ecoul Total Sans RAR N-1'
+
+		perspectiveMeasure 'Evol Qte Stk Ent Phy UVC Vision TCO RMS'
+
+		perspectiveMeasure 'Evol Qte Stk Total (Mag + Ent)'
+
+		perspectiveMeasure 'Evol CA TTC / Réf co'
+
+		perspectiveMeasure 'Evol Qte / Réf co'
+
+		perspectiveMeasure 'Mt Marge Vte / Ref co N-1'
+
+		perspectiveMeasure 'Evol Marge / Réf co'
+
+		perspectiveMeasure 'Prx Vte CAT TTC N-1'
+
+		perspectiveMeasure 'Prx Vte CAT TTC Fr N-1'
+
+		perspectiveMeasure 'Mt Marge Vte N-2'
+
+		perspectiveMeasure 'Mt Marge Vte N-3'
+
+		perspectiveMeasure 'Evol Qte Vte N/N-2'
+
+		perspectiveMeasure 'Evol Qte Vte N/N-3'
+
+		perspectiveMeasure 'Evol Marge Vte N/N-2'
+
+		perspectiveMeasure 'Evol Marge Vte N/N-3'
+
+		perspectiveMeasure 'Taux de Marge N-2'
+
+		perspectiveMeasure 'Evol Taux De Marge N/N-2'
+
+		perspectiveMeasure 'Taux de Marge N-3'
+
+		perspectiveMeasure 'Evol Taux De Marge N/N-3'
+
+		perspectiveMeasure 'CA TTC Vte Devise'
+
+		perspectiveMeasure 'CA HT Vte Devise N-1'
+
+		perspectiveMeasure 'CA HT Vte Devise N-2'
+
+		perspectiveMeasure 'CA HT Vte Devise N-3'
+
+		perspectiveMeasure 'CA HT Vte Devise'
+
+		perspectiveMeasure 'CA TTC Vte Devise N-1'
+
+		perspectiveMeasure 'CA TTC Vte Devise N-2'
+
+		perspectiveMeasure 'CA TTC Vte Devise N-3'
+
+		perspectiveMeasure 'Evol CA HT Vte Devise N/N-1'
+
+		perspectiveMeasure 'Evol CA HT Vte Devise N/N-2'
+
+		perspectiveMeasure 'Evol CA HT Vte Devise N/N-3'
+
+		perspectiveMeasure 'Evol CA TTC Vte Devise N/N-1'
+
+		perspectiveMeasure 'Evol CA TTC Vte Devise N/N-2'
+
+		perspectiveMeasure 'Evol CA TTC Vte Devise N/N-3'
+
+		perspectiveMeasure 'Nb RC vendues (vision pays/sem)'
+
+		perspectiveMeasure 'Déf /Nb Mag Détenteurs N-1'
+
+		perspectiveMeasure 'Taux de mise en vente N-1'
+
+		perspectiveMeasure 'Nb Mag Détenteurs TOTAL N-1'
+
+		perspectiveMeasure 'Nb Mag Vendeurs TOTAL N-1'
+
+		perspectiveMeasure 'Nb Sem avec Vtes TOTAL N-1'
+
+		perspectiveMeasure 'Nb Mag Détenteurs Période de co (vision pays/sem)'
+
+		perspectiveMeasure 'Nb RC vendues pays Période de co'
+
+		perspectiveMeasure 'Mt PCM HT Periode de co'
+
+		perspectiveMeasure 'Prx PMD HT initial'
+
+		perspectiveMeasure 'Prx PCM HT initial'
+
+		perspectiveMeasure 'Mt Marge PCM initial'
+
+		perspectiveMeasure 'Taux marge PCM initial'
+
+		perspectiveMeasure 'Mt Marge PCM initial N-1'
+
+		perspectiveMeasure 'Evol Marge PCM Initial'
+
+		perspectiveMeasure 'Taux marge PCM initial N-1'
+
+		perspectiveMeasure 'Evol Taux De Marge PCM Initial N/N-1'
+
+		perspectiveMeasure 'TME PCM initial'
+
+		perspectiveMeasure 'TME PCM initial N-1'
+
+		perspectiveMeasure 'Evol TME PCM Initial N/N-1'
+
+		perspectiveMeasure 'Grille Taille'
+
+		perspectiveMeasure 'Mt Px Vte Catalogue TTC / TVA'
+
+		perspectiveMeasure 'Nb RCT Avec Dispo UVC TCO copy'
+
+		perspectiveMeasure 'Nb RCT En Rupture Mag'
+
+		perspectiveMeasure 'Nb RCT En Rupture Mag / Nb RCT Livré'
+
+		perspectiveMeasure 'Nb RCT En Rupture Appro'
+
+		perspectiveMeasure 'Nb RCT En Rupture Achat'
+
+		perspectiveMeasure 'Nb RCT En Rupture Appro / Nb RCT Livré'
+
+		perspectiveMeasure 'Nb RCT En Rupture Achat / Nb RCT Livré'
+
+		perspectiveMeasure 'Qte Besoin Reappro'
+
+		perspectiveMeasure 'Qte Besoin Reappro J-7'
+
+		perspectiveMeasure 'Qte Besoin Reappro N-1'
+
+		perspectiveMeasure 'Qte Cmd Frn UVC'
+
+		perspectiveMeasure 'Qte Cmd Frn UVC copy'
+
+		perspectiveMeasure 'Qte Reception Cmd Frn UVC'
+
+		perspectiveMeasure 'Qte Stk Ent Dispo - Protege Web'
+
+		perspectiveMeasure 'Qte Stk Ent Dispo - Protege Web N-1'
+
+		perspectiveMeasure 'Qte Stk Ent Dispo UVC CM RMS'
+
+		perspectiveMeasure 'Qte Stk Ent Dispo UVC RMS'
+
+		perspectiveMeasure 'Qte Stk Ent Dispo UVC RMS N-1'
+
+		perspectiveMeasure 'Qte Stk Ent Dispo UVC Vision TCO RMS'
+
+		perspectiveMeasure 'Qte Stk Ent Dispo UVC Vision TCO RMS N-1'
+
+		perspectiveMeasure 'Qte Stk Ent Phy UVC CM RMS'
+
+		perspectiveMeasure 'Qte Stk Ent Phy UVC RMS'
+
+		perspectiveMeasure 'Qte Stk Ent Phy UVC Vision TCO RMS'
+
+		perspectiveMeasure 'Qte Stk Ent Phy UVC Vision TCO RMS N-1'
+
+		perspectiveMeasure 'Qte Stk Ent Protege Web'
+
+		perspectiveMeasure 'Qte Stk Ent Protege Web N-1'
+
+		perspectiveMeasure 'Qte Stk Ent UVC CM InfoLog'
+
+		perspectiveMeasure 'Qte Stk Ent UVC InfoLog'
+
+		perspectiveMeasure 'Qte Stk Ent UVC InfoLog n-1'
+
+		perspectiveMeasure 'Qte Stk Ent UVC VIsion TCO InfoLog'
+
+		perspectiveMeasure 'Qte Stk Mag (YC Encours)'
+
+		perspectiveMeasure 'Qte Stk Mag (YC Encours) N-1'
+
+		perspectiveMeasure 'Qte Stk Theo EnCours Cmd Mag'
+
+		perspectiveMeasure 'Qte Stk Theo Encours Cmd Mag N-1'
+
+		perspectiveMeasure 'Qte Stk Theo Mag Stock'
+
+		perspectiveMeasure 'Qte Stk Theo Mag Stock N-1'
+
+		perspectiveMeasure 'Qte Stk Total (Mag + Ent)'
+
+		perspectiveMeasure 'Qte Stk Total (Mag + Ent) N-1'
+
+		perspectiveMeasure 'Qte Vte'
+
+		perspectiveMeasure 'Qte Vte / Ref co '
+
+		perspectiveMeasure 'Qte Vte / Ref co  N-1'
+
+		perspectiveMeasure 'Qte Vte Cumul'
+
+		perspectiveMeasure 'Qte Vte n-1'
+
+		perspectiveMeasure 'Qte Vte n-2'
+
+		perspectiveMeasure 'Qte Vte n-3'
+
+		perspectiveMeasure 'Qte Vte période de co'
+
+		perspectiveMeasure 'Qte Vte S-1'
+
+		perspectiveMeasure 'Qte Vte S-2'
+
+		perspectiveMeasure 'Qte Vte S-3'
+
+		perspectiveMeasure 'V_Rot_Entrepôt (Hebdo)'
+
+		perspectiveMeasure 'V_Rot_Globale (jr)'
+
+		perspectiveMeasure 'V_Rot_Mag (Hebdo)'
+
+		perspectiveMeasure 'V_Rot_Mag (jr)'
+
+		perspectiveMeasure 'V_Rot_Magasin (Hebdo) / vtes futures'
+
+	perspectiveTable Attribut
+
+		perspectiveColumn COD_CUG
+
+		perspectiveColumn COD_SAISON
+
+		perspectiveColumn COD_REF_PRD_ATTRIBUT
+
+		perspectiveColumn LIB_PRD_ATTRIBUT
+
+		perspectiveColumn VALEUR_PRD_ATTRIBUT
+
+		perspectiveColumn COD_CUG_SAISON
+
+	perspectiveTable Composant
+
+		perspectiveColumn COD_CUG
+
+		perspectiveColumn COD_CUG_COMPOSANT
+
+		perspectiveColumn COD_SAISON
+
+		perspectiveColumn COD_ARTICLE_COMPOSANT
+
+		perspectiveColumn NBR_UVC
+
+		perspectiveColumn NBR_PCB
+
+		perspectiveColumn QTE_TCO
+
+		perspectiveColumn DAT_ARR
+
+		perspectiveColumn COD_CUG_SAISON
+
+		perspectiveColumn COD_CUG_COMPOSANT_SAISON
+
+	perspectiveTable 'Prix Produit Pays'
+
+		perspectiveColumn COD_ARTICLE
+
+		perspectiveColumn COD_CUG
+
+		perspectiveColumn COD_PAYS
+
+		perspectiveColumn DAT_DEB_APP_TARIF
+
+		perspectiveColumn DAT_FIN_APP_TARIF
+
+		perspectiveColumn PRX_PCM_HT_EUR
+
+		perspectiveColumn PRX_PMD_HT_EUR
+
+		perspectiveColumn PRX_VTE_CAT_TTC_DEV
+
+		perspectiveColumn LIB_DEVISE_ORIGINE
+
+	perspectiveTable 'Reference Format Mag'
+
+		perspectiveColumn COD_MAGASIN
+
+		perspectiveColumn COD_REF_COMM
+
+		perspectiveColumn COD_REF_NOMENC
+
+		perspectiveColumn LIB_FORMAT_PERF
+
+		perspectiveColumn LIB_FORMAT_TAILLE
+
+		perspectiveColumn DAT_ENTREE_VIGUEUR
+
+		perspectiveColumn COD_SAISON
+
+		perspectiveColumn COD_RAYON
+
+		perspectiveColumn COD_MAGASIN_RMS
+
+	perspectiveTable Phase
+
+		perspectiveColumn COD_PHASE
+
+		perspectiveColumn DAT_DEB_PHASE
+
+		perspectiveColumn DAT_FIN_PHASE
+
+		perspectiveColumn LIB_PHASE
+
+		perspectiveColumn COD_REF_COMM
+
+		perspectiveColumn COD_REF_PHASE
+
+		perspectiveColumn COD_SAISON
+

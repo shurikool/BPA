@@ -1,0 +1,385 @@
+/// Fait : Vente Magasin
+table F_VTE_MAG_CUG
+	isHidden
+
+	column DAT_VTE
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: DAT_VTE
+
+	column COD_REF_COMM
+		dataType: int64
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_REF_COMM
+
+	column COD_REF_NOMENC
+		dataType: int64
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_REF_NOMENC
+
+	column QTE_VTE
+		dataType: int64
+		formatString: #,##0
+		isAvailableInMdx: false
+		encodingHint: value
+		summarizeBy: sum
+		sourceColumn: QTE_VTE
+
+	column COD_CUG_COD_SAISON
+		dataType: string
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_CUG_COD_SAISON
+
+	column MNT_CA_NET_TTC_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: MNT_CA_NET_TTC_EUR
+
+	column MNT_CA_NET_HT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: MNT_CA_NET_HT_EUR
+
+	column MNT_PCM_HT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: MNT_PCM_HT_EUR
+
+	column MNT_PMD_HT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: MNT_PMD_HT_EUR
+
+	column MNT_VTE_CAT_TTC_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: MNT_VTE_CAT_TTC_EUR
+
+	column MNT_VTE_PRM_TTC_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: MNT_VTE_PRM_TTC_EUR
+
+	column MNT_VTE_SLD_TTC_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: MNT_VTE_SLD_TTC_EUR
+
+	column TYP_PRX_VTE
+		dataType: string
+		sourceColumn: TYP_PRX_VTE
+
+	column PRX_PCM_HT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: PRX_PCM_HT_EUR
+
+	column PRX_PMD_HT_EUR
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: PRX_PMD_HT_EUR
+
+	column PRX_VTE_CAT_TTC_DEV
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: PRX_VTE_CAT_TTC_DEV
+
+	column PRX_VTE_PRM_TTC_DEV
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: PRX_VTE_PRM_TTC_DEV
+
+	column PRX_VTE_SLD_TTC_DEV
+		dataType: decimal
+		formatString: #,##0.00
+		isAvailableInMdx: false
+		encodingHint: value
+		sourceColumn: PRX_VTE_SLD_TTC_DEV
+
+	column TAU_TVA
+		dataType: int64
+		sourceColumn: TAU_TVA
+
+	column TAU_DEV_VERS_EUR
+		dataType: decimal
+		sourceColumn: TAU_DEV_VERS_EUR
+
+	column LIB_DEVISE_ORIGINE
+		dataType: string
+		sourceColumn: LIB_DEVISE_ORIGINE
+
+	column DAT_REMONTEE_VTE
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		sourceColumn: DAT_REMONTEE_VTE
+
+	column COD_MAGASIN_RMS
+		dataType: int64
+		isAvailableInMdx: false
+		displayFolder: KEYS
+		summarizeBy: none
+		sourceColumn: COD_MAGASIN_RMS
+
+	partition '2021 Q4' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2021/Q4")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2022 Q1' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2022/Q1")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2022 Q2' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2022/Q2")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2022 Q3' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2022/Q3")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2022 Q4' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2022/Q4")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2023 Q1' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q1")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2023 Q2' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q2")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2023 Q3' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q3")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2023 Q4' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2023/Q4")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2024 Q1' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q1")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2024 Q2' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q2")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2024 Q3' = m
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q3")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2024 Q4' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2024/Q4")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
+	partition '2025 Q1' = m
+		dataView: full
+		source =
+				let
+				    Source = AzureBlobs,
+				    src1 = Source{[Name="src"]}[Data],
+				    #"Filtered Rows" = Table.SelectRows(src1, each Text.StartsWith([Name], "SPOC/") and Text.Contains([Name], "F_VTE") and [Extension] = ".gz"),
+				    #"Filter Quarter" = Table.SelectRows(#"Filtered Rows", each Text.Contains([Name], "2025/Q1")),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Filter Quarter", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File (F_VTE_MAG_CUG)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1",{"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File (F_VTE_MAG_CUG)"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"DAT_VTE", type date}, {"COD_REF_COMM", Int64.Type}, {"COD_REF_NOMENC", Int64.Type},{"QTE_VTE", Int64.Type}, {"MNT_CA_NET_TTC_EUR", type number}, {"MNT_CA_NET_HT_EUR", type number}, {"MNT_PCM_HT_EUR", type number}, {"MNT_PMD_HT_EUR", type number}, {"MNT_VTE_CAT_TTC_EUR", type number}, {"MNT_VTE_PRM_TTC_EUR", type number}, {"MNT_VTE_SLD_TTC_EUR", type number}, {"TYP_PRX_VTE", type text}, {"PRX_PCM_HT_EUR", type number}, {"PRX_PMD_HT_EUR", type number}, {"PRX_VTE_CAT_TTC_DEV", type number}, {"PRX_VTE_PRM_TTC_DEV", type number}, {"PRX_VTE_SLD_TTC_DEV", type number}, {"TAU_TVA", Int64.Type}, {"TAU_DEV_VERS_EUR", type number}, {"LIB_DEVISE_ORIGINE", type text}, {"DAT_REMONTEE_VTE", type date}, {"COD_MAGASIN_RMS", Int64.Type}, {"COD_CUG_COD_SAISON", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"DAT_VTE"})
+				in
+				    #"Removed Errors"
+
